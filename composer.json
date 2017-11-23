@@ -1,0 +1,9 @@
+{
+    "name": "fusioncharts/fusionexport-php-client",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "FusionExport\\": "src/FusionExport"
+        }
+    }
+}
