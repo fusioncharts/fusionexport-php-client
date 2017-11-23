@@ -2,15 +2,27 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use FcExportPHPClient\ExportManager;
+use FusionExport\ExportManager;
+use FusionExport\ExportConfig;
 
-$chartConfig = '[{"type":"column2d","renderAt":"chart-container","width":"550","height":"350","dataFormat":"json","dataSource":{"chart":{"caption":"Number of visitors last week","subCaption":"Bakersfield Central vs Los Angeles Topanga"},"data":[{"label":"Mon","value":"15123"},{"label":"Tue","value":"14233"},{"label":"Wed","value":"25507"}]}}]';
+$exportConfig = new ExportConfig();
+$exportConfig->set('chartConfig', file_get_contents('chartConfig.json'));
+
+$onStateChange = function ($state) {
+  echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
+};
+
+$onDone = function ($export, $e) {
+    if ($e) {
+        echo('ERROR: ' . $e);
+    } else {
+        foreach ($export as $file) {
+            echo('DONE: ' . $file->realName . "\n");
+            copy($file->tmpPath, $file->realName);
+        }
+    }
+};
 
 $exportManager = new ExportManager();
-$exportManager->connect();
-$export = $exportManager->export('{"chartConfig":' . $chartConfig . '}');
-$exportManager->close();
+$exportManager->export($exportConfig, $onDone, $onStateChange);
 
-foreach ($export as $file) {
-  copy($file->tmpPath, $file->realName);
-}

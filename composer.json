@@ -1,9 +1,9 @@
 {
-    "name": "fusioncharts/fc-export-php-client",
+    "name": "fusioncharts/fusionexport-php-client",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "FcExportPHPClient\\": "src/FcExportPHPClient"
+            "FusionExport\\": "src/FusionExport"
         }
     }
 }
