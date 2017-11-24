@@ -64,6 +64,13 @@ class Exporter
         }
     }
 
+    public function cancel()
+    {
+        if (!is_null($this->tcpClient)) {
+            socket_close($this->tcpClient);
+        }
+    }
+
     private function processDataReceived($data)
     {
         $parts = explode(Constants::UNIQUE_BORDER, $data);

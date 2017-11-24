@@ -14,7 +14,7 @@ $onStateChange = function ($state) {
 
 $onDone = function ($export, $e) {
     if ($e) {
-        echo('ERROR: ' . $e);
+        echo('ERROR: ' . $e->getMessage());
     } else {
         foreach ($export as $file) {
             echo('DONE: ' . $file->realName . "\n");
@@ -25,4 +25,3 @@ $onDone = function ($export, $e) {
 
 $exportManager = new ExportManager();
 $exportManager->export($exportConfig, $onDone, $onStateChange);
-
