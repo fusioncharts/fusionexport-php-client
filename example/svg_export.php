@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Converting an SVG image to PNG/JPEG/PDF
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -8,7 +8,7 @@ use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('inputSVG', realpath('vector.svg'));
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
