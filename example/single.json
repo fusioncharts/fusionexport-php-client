@@ -3,6 +3,7 @@
   "renderAt": "chart-container",
   "width": "550",
   "height": "350",
+  "id": "myChartId",
   "dataFormat": "json",
   "dataSource": {
     "chart": {

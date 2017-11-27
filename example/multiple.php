@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Manipulating the output filename
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -8,7 +8,8 @@ use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('chartConfig', file_get_contents('multiple.json'));
+$exportConfig->set('exportFile', 'php-export-<%= number(5) %>');
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");

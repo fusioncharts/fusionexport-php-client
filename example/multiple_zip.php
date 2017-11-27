@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Exporting the Output Files as Zip
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -8,7 +8,9 @@ use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('chartConfig', file_get_contents('multiple.json'));
+$exportConfig->set('exportFile', 'php-export-<%= number(5) %>');
+$exportConfig->set('exportAsZip', 'true');
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");

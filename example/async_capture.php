@@ -9,6 +9,8 @@ use FusionExport\ExportConfig;
 
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('callbackFilePath', realpath('expand_scroll.js'));
+$exportConfig->set('asyncCapture', 'true');
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");

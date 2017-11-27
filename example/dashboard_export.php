@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Exporting a dashboard
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -8,7 +8,8 @@ use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('chartConfig', file_get_contents('multiple.json'));
+$exportConfig->set('templateFilePath', realpath('template.html'));
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
