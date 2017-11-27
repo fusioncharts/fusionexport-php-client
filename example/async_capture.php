@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Async capture
 
 require __DIR__ . '/../vendor/autoload.php';
 
