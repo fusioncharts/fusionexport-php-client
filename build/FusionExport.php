@@ -1,6 +1,5 @@
 <?php
 
-namespace FusionExport;
 
 class Constants
 {

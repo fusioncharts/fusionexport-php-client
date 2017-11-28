@@ -48,12 +48,14 @@ foreach ($src as $index => $file) {
     $content = file_get_contents($file);
 
     echo('Processing ' . $file . "\n");
-    if ($index > 0) {
-        foreach($targetLines as $line) {
-            while (strpos($content, $line) !== false) {
-                $content = remove_line($content, $line);
-            }
+    foreach($targetLines as $line) {
+        while (strpos($content, $line) !== false) {
+            $content = remove_line($content, $line);
         }
+    }
+
+    if ($index === 0) {
+        $content = "<?php\n" . $content;
     }
 
     file_put_contents($dest, $content, FILE_APPEND);
