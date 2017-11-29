@@ -10,7 +10,7 @@ use FusionExport\ExportConfig;
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', file_get_contents('multiple.json'));
 $exportConfig->set('exportFile', 'php-export-<%= number(5) %>');
-$exportConfig->set('exportAsZip', 'true');
+$exportConfig->set('exportAsZip', true);
 
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");

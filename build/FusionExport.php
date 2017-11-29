@@ -98,6 +98,9 @@ class ExportConfig
 
             case 'chartConfig':
                 return $value;
+            case 'asyncCapture':
+            case 'exportAsZip':
+                return $value ? 'true' : 'false';
             default:
                 return "\"" . $value . "\"";
 
