@@ -4,17 +4,21 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Use the sdk
 use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
+// Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('single.json'));
+$exportConfig->set('chartConfig', file_get_contents('resources/single.json'));
 $exportConfig->set('libraryDirectoryPath', 'licensed/fusioncharts');
 
+// Called on each export state change
 $onStateChange = function ($state) {
   echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
+// Called when export is done
 $onDone = function ($export, $e) {
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
@@ -26,5 +30,7 @@ $onDone = function ($export, $e) {
     }
 };
 
+// Instantiate the ExportManager class
 $exportManager = new ExportManager();
+// Call the export() method with the export config and the respective callbacks
 $exportManager->export($exportConfig, $onDone, $onStateChange);
