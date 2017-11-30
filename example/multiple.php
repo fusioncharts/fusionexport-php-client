@@ -1,6 +1,6 @@
 <?php
 
-// Manipulating the output filename
+// Export in Bulk
 
 require __DIR__ . '/../vendor/autoload.php';
 
