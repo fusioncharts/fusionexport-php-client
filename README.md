@@ -5,7 +5,7 @@ This is a PHP Export Client for FusionExport. It communicates with FusionExport 
 ## Installation
 
 ```
-composer require fusioncharts/fusionexport-php-client
+composer require fusioncharts/fusionexport
 ```
 
 ## Usage
