@@ -7,7 +7,7 @@ This is a PHP export client for FusionExport. It communicates with FusionExport 
 To install this package, simply use composer:
 
 ```
-composer require fusioncharts/fusionexport
+composer require fusioncharts/fusionexport:1.0.0-beta
 ```
 
 ## Usage
