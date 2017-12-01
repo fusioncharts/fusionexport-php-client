@@ -14,6 +14,7 @@ class ExportConfig
     public function set($name, $value)
     {
         $this->configs[$name] = $value;
+        return $this;
     }
 
     public function get($name)
@@ -24,6 +25,7 @@ class ExportConfig
     public function remove($name)
     {
         unset($this->configs[$name]);
+        return $this;
     }
 
     public function has($name)
@@ -87,6 +89,9 @@ class ExportConfig
 
             case 'chartConfig':
                 return $value;
+            case 'asyncCapture':
+            case 'exportAsZip':
+                return $value ? 'true' : 'false';
             default:
                 return "\"" . $value . "\"";
 

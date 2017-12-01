@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Exporting a dashboard
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -10,7 +10,8 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('resources/single.json'));
+$exportConfig->set('chartConfig', file_get_contents('resources/multiple.json'));
+$exportConfig->set('templateFilePath', realpath('resources/template.html'));
 
 // Called on each export state change
 $onStateChange = function ($state) {

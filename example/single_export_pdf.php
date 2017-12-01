@@ -1,6 +1,6 @@
 <?php
 
-// Exporting a chart
+// Changing the export type
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -11,6 +11,7 @@ use FusionExport\ExportConfig;
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', file_get_contents('resources/single.json'));
+$exportConfig->set('type', 'pdf');
 
 // Called on each export state change
 $onStateChange = function ($state) {

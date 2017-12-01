@@ -1,6 +1,113 @@
 <?php
 
-namespace FusionExport;
+
+class Constants
+{
+    const EXPORT_DATA = 'EXPORT_DATA:';
+    const EXPORT_EVENT = 'EXPORT_EVENT:';
+    const UNIQUE_BORDER = ':8780dc3c41214695ae96b3432963d744:';
+    const DEFAULT_HOST = '127.0.0.1';
+    const DEFAULT_PORT = 1337;
+}
+
+
+class ExportConfig
+{
+    protected $configs;
+
+    public function __construct()
+    {
+        $this->configs = [];
+    }
+
+    public function set($name, $value)
+    {
+        $this->configs[$name] = $value;
+        return $this;
+    }
+
+    public function get($name)
+    {
+        return $this->configs[$name];
+    }
+
+    public function remove($name)
+    {
+        unset($this->configs[$name]);
+        return $this;
+    }
+
+    public function has($name)
+    {
+        return array_key_exists($name, $this->configs);
+    }
+
+    public function clear()
+    {
+        $this->configs = [];
+    }
+
+    public function count()
+    {
+        return count($this->configs);
+    }
+
+    public function configNames()
+    {
+        return array_keys($this->configs);
+    }
+
+    public function configValues()
+    {
+        return array_values($this->configs);
+    }
+
+    public function clone()
+    {
+        $newExportConfig = new ExportConfig();
+
+        foreach ($this->configs as $key => $value) {
+            $newExportConfig->set($key, $value);
+        }
+
+        return $newExportConfig;
+    }
+
+    public function getFormattedConfigs()
+    {
+        $configsAsJSON = '';
+
+        foreach ($this->configs as $key => $value) {
+            $formattedConfigValue = $this->getFormattedConfigValue($key, $value);
+            $keyValuePair = "\"" . $key . "\": " . $formattedConfigValue . ', ';
+
+            $configsAsJSON .= $keyValuePair;
+        }
+
+        if (strlen($configsAsJSON) > 1) {
+            $configsAsJSON = rtrim($configsAsJSON, ', ');
+        }
+
+        $configsAsJSON = '{' . $configsAsJSON . '}';
+        return $configsAsJSON;
+    }
+
+    private function getFormattedConfigValue($name, $value)
+    {
+        switch ($name) {
+
+            case 'chartConfig':
+                return $value;
+            case 'asyncCapture':
+            case 'exportAsZip':
+                return $value ? 'true' : 'false';
+            default:
+                return "\"" . $value . "\"";
+
+        }
+    }
+}
+
 
 class Exporter
 {
@@ -145,5 +252,33 @@ class Exporter
         }
 
         return false;
+    }
+}
+
+
+class ExportManager
+{
+    private $host;
+
+    private $port;
+
+    public function __construct(
+        $host = Constants::DEFAULT_HOST,
+        $port = Constants::DEFAULT_PORT
+    )
+    {
+        $this->host = $host;
+        $this->port = $port;
+    }
+
+    public function export(ExportConfig $exportConfig, $exportDoneListener = null, $exportStateChangedListener = null)
+    {
+        $exporter = new Exporter($exportConfig, $exportDoneListener, $exportStateChangedListener);
+
+        $exporter->setExportConnectionConfig($this->host, $this->port);
+
+        $exporter->start();
+
+        return $exporter;
     }
 }
