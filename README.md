@@ -1,6 +1,6 @@
-# FusionCharts PHP Export Client
+# FusionExport PHP Client
 
-This is a PHP Export Client for FC Export Service. It communicates with Export Service through the socket protocol and does the export.
+This is a PHP Export Client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
 
 ## Installation
 
@@ -37,3 +37,7 @@ public function export(ExportConfig exportConfig, exportDone, exportStateChanged
 `exportDone` callback gets an array of abject which contains the temporary file path and the resolved name of the file as specified in the `output-file` option of the config.
 
 `exportStateChanged` callback gets an object which contains the state of the export on each progress event.
+
+## API Reference
+
+You can find the full reference [here](https://www.fusioncharts.com/dev/exporting-charts/using-fusionexport/sdk-api-reference/php.html)
