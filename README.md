@@ -1,6 +1,6 @@
 # FusionExport PHP Client
 
-This is a PHP Export Client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
+This is a PHP export client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
 
 ## Installation
 
