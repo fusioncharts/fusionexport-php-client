@@ -1,6 +1,6 @@
 # FusionExport PHP Client
 
-This is a PHP Export Client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
+This is a PHP export client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
 
 ## Installation
 
@@ -21,7 +21,7 @@ use FusionExport\ExportConfig;
 
 ## API Reference
 
-You can find the full reference [here](https://www.fusioncharts.com/dev/exporting-charts/using-fusionexport/sdk-api-reference/php.html)
+You can find the full reference [here](https://www.fusioncharts.com/dev/exporting-charts/using-fusionexport/sdk-api-reference/php.html).
 
 ## Example
 
