@@ -24,9 +24,10 @@ $onDone = function ($export, $e) {
         echo('ERROR: ' . $e->getMessage());
     } else {
         foreach ($export as $file) {
-            echo('DONE: ' . $file->realName . "\n");
-            copy($file->tmpPath, $file->realName);
+            echo('DONE: ' . $file->realName. "\n");
         }
+
+        ExportManager::saveExportedFiles($export);
     }
 };
 

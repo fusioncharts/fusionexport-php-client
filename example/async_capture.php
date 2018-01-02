@@ -26,8 +26,9 @@ $onDone = function ($export, $e) {
     } else {
         foreach ($export as $file) {
             echo('DONE: ' . $file->realName . "\n");
-            copy($file->tmpPath, $file->realName);
         }
+
+        ExportManager::saveExportedFiles($export);
     }
 };
 

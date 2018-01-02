@@ -14,7 +14,7 @@ class Exporter
 
     private $exportServerPort;
 
-    private $tcpClient;
+    private $wsClient;
 
     public function __construct(ExportConfig $exportConfig, $exportDoneListener, $exportStateChangedListener)
     {
@@ -31,65 +31,43 @@ class Exporter
 
     public function start()
     {
-        try {
+        $connString = 'ws://' . $this->exportServerHost . ':' . $this->exportServerPort;
 
-            $this->tcpClient = socket_create(AF_INET, SOCK_STREAM, 0);
+        \Ratchet\Client\connect($connString)->then(function ($conn) {
 
-            socket_connect($this->tcpClient, $this->exportServerHost, $this->exportServerPort);
+            $this->wsClient = $conn;
 
-            $payload = $this->getFormattedExportConfigs();
+            $this->wsClient->on('message', function ($data) {
+                $this->processDataReceived($data);
+            });
 
-            socket_write($this->tcpClient, $payload, strlen($payload));
+            $this->wsClient->send($this->getFormattedExportConfigs());
 
-            $data = '';
-
-            do {
-
-                $inboundData = socket_read($this->tcpClient, 4096);
-                $data .= $inboundData;
-                $data = $this->processDataReceived($data);
-
-            } while (strlen($inboundData) > 0);
-
-        } catch (\Exception $e) {
+        }, function ($e) {
 
             $this->onExportDone(null, $e);
 
-        } finally {
-
-            if (!is_null($this->tcpClient)) {
-                socket_close($this->tcpClient);
-            }
-
-        }
+        });
     }
 
     public function cancel()
     {
-        if (!is_null($this->tcpClient)) {
-            socket_close($this->tcpClient);
+        if (!is_null($this->wsClient)) {
+            $this->wsClient->close();
         }
     }
 
     private function processDataReceived($data)
     {
-        $parts = explode(Constants::UNIQUE_BORDER, $data);
+        if ($this->startsWith($data, Constants::EXPORT_EVENT)) {
 
-        foreach ($parts as $part) {
+            $this->processExportStateChangedData($data);
 
-            if ($this->startsWith($part, Constants::EXPORT_EVENT)) {
+        } else if ($this->startsWith($data, Constants::EXPORT_DATA)) {
 
-                $this->processExportStateChangedData($part);
-
-            } else if ($this->startsWith($part, Constants::EXPORT_DATA)) {
-
-                $this->processExportDoneData($part);
-
-            }
+            $this->processExportDoneData($data);
 
         }
-
-        return $parts[count($parts) - 1];
     }
 
     private function processExportStateChangedData($data)
@@ -128,6 +106,8 @@ class Exporter
 
     private function onExportDone($data, \Exception $e = null)
     {
+        $this->cancel();
+
         if (is_null($this->exportDoneListener)) return;
 
         call_user_func($this->exportDoneListener, $data, $e);
