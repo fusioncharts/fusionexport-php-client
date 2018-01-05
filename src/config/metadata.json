@@ -1,0 +1,47 @@
+{
+    "chartConfig": {
+        "type": "string"
+    },
+    "inputSVG": {
+        "type": "string"
+    },
+    "template": {
+        "type": "string"
+    },
+    "callbacks": {
+        "type": "string"
+    },
+    "asyncCapture": {
+        "type": "boolean",
+        "converter": "BooleanFromStringNumber"
+    },
+    "maxWaitForCaptureExit": {
+        "type": "integer",
+        "converter": "NumberFromString"
+    },
+    "dashboardLogo": {
+        "type": "string"
+    },
+    "dashboardHeading": {
+        "type": "string"
+    },
+    "dashboardSubHeading": {
+        "type": "string"
+    },
+    "outputFile": {
+        "type": "string"
+    },
+    "type": {
+        "type": "string"
+    },
+    "outputFileDefinition": {
+        "type": "string"
+    },
+    "exportAsZip": {
+        "type": "boolean",
+        "converter": "BooleanFromStringNumber"
+    },
+    "resources": {
+        "type": "string"
+    }
+}
