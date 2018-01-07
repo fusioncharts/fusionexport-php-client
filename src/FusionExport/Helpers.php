@@ -9,6 +9,11 @@ class Helpers
         return substr($string, 0, strlen($query)) === $query;
     }
 
+    public static function endsWith($string, $query)
+    {
+        return substr($string, strlen($query) * -1) === $query;
+    }
+
     public static function findCommonPath($paths) {
         sort($paths, SORT_STRING);
         if (count($paths) === 0) return '';
@@ -72,5 +77,10 @@ class Helpers
         chdir($cwd);
 
         return $resolvedPaths;
+    }
+
+    public static function convertFilePathToBase64($val)
+    {
+        return base64_encode(file_get_contents($val));
     }
 }

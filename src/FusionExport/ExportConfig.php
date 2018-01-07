@@ -13,6 +13,7 @@ class ExportConfig
     {
         $this->metaDataFile = __DIR__ . '/../config/metadata.json';
         $this->configs = [];
+        $this->formattedConfigs = [];
 
         $this->readMetaDataConfig();
     }
@@ -104,10 +105,10 @@ class ExportConfig
     {
         $configsAsJSON = '';
 
-        foreach ($this->configs as $key => $value) {
-            $formattedConfigValue = $this->getFormattedConfigValue($key, $value);
-            $keyValuePair = "\"" . $key . "\": " . $formattedConfigValue . ', ';
+        $this->formatConfigs();
 
+        foreach ($this->formattedConfigs as $key => $value) {
+            $keyValuePair = "\"" . $key . "\": \"" . $value . "\", ";
             $configsAsJSON .= $keyValuePair;
         }
 
@@ -119,34 +120,56 @@ class ExportConfig
         return $configsAsJSON;
     }
 
-    private function getFormattedConfigValue($name, $value)
+    private function formatConfigs()
     {
-        switch ($name) {
+        if (isset($this->configs['template'])) {
+            $tmplBundler = new TemplateBundler(
+                $this->configs['template'],
+                $this->configs['resources']
+            );
 
-            case 'chartConfig':
-                return $value;
-            case 'asyncCapture':
-            case 'exportAsZip':
-                return $value ? 'true' : 'false';
-            case 'templateFilePath':
-                return TemplatePackager::getZip(
-                    $this->get('templateFilePath'), 
-                    $this->get('resourceFilePath')
-                );
-            case 'outputFileDefinition': 
-            case 'dashboardLogo':
-            case 'callbackFilePath':
-            case 'inputSVG':
-                return ExportConfig::convertFilePathToBase64($value);
-            default:
-                return "\"" . $value . "\"";
+            $tmplBundler->process();
 
+            $this->formattedConfigs['template'] = $tmplBundler->getTemplatePathInZip();
+            $this->formattedConfigs['resources'] = $tmplBundler->getResourcesZipAsBase64();
+        }
+
+        foreach ($this->configs as $key => $value) {
+            switch ($key) {
+                case 'chartConfig': 
+                    $formattedValue = $this->formatChartConfig($value);
+                    break;
+                case 'asyncCapture':
+                case 'exportAsZip':
+                    $formattedValue = $value ? 'true' : 'false';
+                    break;
+                case 'outputFileDefinition': 
+                case 'dashboardLogo':
+                case 'callbacks':
+                case 'inputSVG':
+                    $formattedValue = Helpers::convertFilePathToBase64($value);
+                    break;
+                case 'template':
+                case 'resources':
+                    $formattedValue = null;
+                    break;
+                default:
+                    $formattedValue = $value;
+            }
+
+            if (isset($formattedValue)) {
+                $this->formattedConfigs[$key] = $formattedValue;
+            }
         }
     }
 
-    private static function convertFilePathToBase64($val)
+    private function formatChartConfig($value)
     {
-        return base64_encode(file_get_contents($val));
+        if (Helpers::endsWith($value, '.json')) {
+            $value = file_get_contents($value);
+        }
+
+        return base64_encode($value);
     }
 
     private function readMetaDataConfig()
