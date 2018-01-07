@@ -108,7 +108,7 @@ class ExportConfig
         $this->formatConfigs();
 
         foreach ($this->formattedConfigs as $key => $value) {
-            $keyValuePair = "\"" . $key . "\": \"" . $value . "\", ";
+            $keyValuePair = "\"" . $key . "\": " . json_encode($value) . ", ";
             $configsAsJSON .= $keyValuePair;
         }
 
@@ -169,7 +169,7 @@ class ExportConfig
             $value = file_get_contents($value);
         }
 
-        return base64_encode($value);
+        return $value;
     }
 
     private function readMetaDataConfig()

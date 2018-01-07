@@ -13,6 +13,7 @@ $ec = new ExportConfig();
 $ec->set('chartConfig', 'resources/multiple.json');
 $ec->set('template', 'resources/template.html');
 $ec->set('resources', 'resources/resource.json');
+$ec->set('dashboardHeading', "Hey there\n col\"gn");
 
 // $key = 'asyncCapture';
 // $val = true;
