@@ -101,7 +101,11 @@ class Exporter
     {
         if (is_null($this->exportStateChangedListener)) return;
 
-        call_user_func($this->exportStateChangedListener, $data);
+        $event = (object) [
+            'state' => $data,
+        ];
+
+        call_user_func($this->exportStateChangedListener, $event);
     }
 
     private function onExportDone($data, \Exception $e = null)
@@ -110,7 +114,11 @@ class Exporter
 
         if (is_null($this->exportDoneListener)) return;
 
-        call_user_func($this->exportDoneListener, $data, $e);
+        $event = (object) [
+            'export' => $data,
+        ];
+
+        call_user_func($this->exportDoneListener, $event, $e);
     }
 
     private function getFormattedExportConfigs()

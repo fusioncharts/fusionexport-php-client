@@ -12,8 +12,8 @@ $ec = new ExportConfig();
 
 $ec->set('chartConfig', 'resources/multiple.json');
 $ec->set('template', 'resources/template.html');
-$ec->set('resources', 'resources/resource.json');
-$ec->set('dashboardHeading', "Hey there\n col\"gn");
+// $ec->set('resources', 'resources/resource.json');
+// $ec->set('dashboardHeading', "Hey there\n col\"gn");
 
 // $key = 'asyncCapture';
 // $val = true;
@@ -23,7 +23,7 @@ $ec->set('dashboardHeading', "Hey there\n col\"gn");
 // $val = 'resources/logo.jpg';
 // $ec->set($key, $val);
 
-$payload = $ec->getFormattedConfigs();
+// $payload = $ec->getFormattedConfigs();
 
 // use FusionExport\TemplateBundler;
 
@@ -41,12 +41,14 @@ $payload = $ec->getFormattedConfigs();
 //     base64_decode($resourcesZipAsBase64)
 // );
 
-$onStateChange = function ($state) {
+$onStateChange = function ($event) {
+    $state = $event->state;
     echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
 // Called when export is done
-$onDone = function ($export, $e) {
+$onDone = function ($event, $e) {
+    $export = $event->export;
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
     } else {

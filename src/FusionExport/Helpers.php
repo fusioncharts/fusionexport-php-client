@@ -14,7 +14,8 @@ class Helpers
         return substr($string, strlen($query) * -1) === $query;
     }
 
-    public static function findCommonPath($paths) {
+    public static function findCommonPath($paths) 
+    {
         sort($paths, SORT_STRING);
         if (count($paths) === 0) return '';
         $paths = array_map(function ($pa) {
@@ -28,7 +29,8 @@ class Helpers
         return implode(DIRECTORY_SEPARATOR, array_slice($p1, 0, $i));
     }
       
-    public static function removeCommonPath($path, $base) {
+    public static function removeCommonPath($path, $base) 
+    {
         $pathSpl = explode(DIRECTORY_SEPARATOR, $path);
         $baseSpl = explode(DIRECTORY_SEPARATOR, $base);
         $l = count($pathSpl);

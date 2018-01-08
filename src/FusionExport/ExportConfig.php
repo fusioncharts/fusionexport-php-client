@@ -125,7 +125,7 @@ class ExportConfig
         if (isset($this->configs['template'])) {
             $tmplBundler = new TemplateBundler(
                 $this->configs['template'],
-                $this->configs['resources']
+                @$this->configs['resources']
             );
 
             $tmplBundler->process();
