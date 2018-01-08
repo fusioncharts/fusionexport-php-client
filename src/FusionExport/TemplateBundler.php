@@ -20,8 +20,6 @@ class TemplateBundler
         
         $this->parseResources();
 
-        $this->sanitizeBasePath();
-
         $this->zipResourcesFiles();
     }
 
@@ -102,10 +100,13 @@ class TemplateBundler
 
     private function sanitizeBasePath()
     {
-        if (isset($this->resourcesData)) {
+        if (
+            isset($this->resourcesData) && 
+            isset($this->resourcesData->basePath)
+        ) {
             $this->basePath = $this->resourcesData->basePath;
         } else {
-            $this->basePath = Helpers::findCommonPath($this->collectedResources);
+            $this->basePath = Helpers::findCommonPath($this->resourcesFiles);
         }
 
         $this->basePath = realpath($this->basePath);
@@ -113,7 +114,7 @@ class TemplateBundler
 
     private function generateZipFiles()
     {
-        $files = [];
+        $this->resourcesFiles = [];
 
         if (isset($this->resourcesData)) {
             $includeFiles = [];
@@ -135,22 +136,25 @@ class TemplateBundler
                 );
             }
 
-            $files = array_filter($includeFiles, function ($file) use ($excludeFiles) {
-                if (in_array($file, $excludeFiles)) return false;
-                return true;
-            });
+            $this->resourcesFiles = array_filter(
+                $includeFiles, 
+                function ($file) use ($excludeFiles) {
+                    if (in_array($file, $excludeFiles)) return false;
+                    return true;
+                }
+            );
         }
 
-        $files = array_merge($files, $this->collectedResources);
+        $this->resourcesFiles = array_merge($this->resourcesFiles, $this->collectedResources);
 
-        $files = array_map(function ($file) {
+        $this->sanitizeBasePath();
+
+        $this->resourcesFiles = array_map(function ($file) {
             return [
                 'path' => $file,
                 'zipPath' => Helpers::removeCommonPath($file, $this->basePath)
             ];
-        }, $files);
-
-        $this->resourcesFiles = $files;
+        }, $this->resourcesFiles);
 
         $this->insertTemplateInZip();
     }
