@@ -2,8 +2,8 @@
 
 namespace FusionExport;
 
-use FusionExport\Converters\NumberFromString;
-use FusionExport\Converters\BooleanFromStringNumber;
+use FusionExport\Converters\NumberConverter;
+use FusionExport\Converters\BooleanConverter;
 
 class ExportConfig
 {
@@ -40,10 +40,10 @@ class ExportConfig
         if (property_exists($this->metaData->$name, 'converter')) {
             $converter = $this->metaData->$name->converter;
 
-            if ($converter === 'BooleanFromStringNumber') {
-                $value = BooleanFromStringNumber::convert($value);
-            } else if ($converter === 'NumberFromString') {
-                $value = NumberFromString::convert($value);
+            if ($converter === 'BooleanConverter') {
+                $value = BooleanConverter::convert($value);
+            } else if ($converter === 'NumberConverter') {
+                $value = NumberConverter::convert($value);
             }
         }
 

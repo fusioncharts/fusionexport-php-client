@@ -5,19 +5,19 @@
     "inputSVG": {
         "type": "string"
     },
-    "template": {
+    "templateFilePath": {
         "type": "string"
     },
-    "callbacks": {
+    "callbackFilePath": {
         "type": "string"
     },
     "asyncCapture": {
         "type": "boolean",
-        "converter": "BooleanFromStringNumber"
+        "converter": "BooleanConverter"
     },
     "maxWaitForCaptureExit": {
         "type": "integer",
-        "converter": "NumberFromString"
+        "converter": "NumberConverter"
     },
     "dashboardLogo": {
         "type": "string"
@@ -39,9 +39,9 @@
     },
     "exportAsZip": {
         "type": "boolean",
-        "converter": "BooleanFromStringNumber"
+        "converter": "BooleanConverter"
     },
-    "resources": {
+    "resourceFilePath": {
         "type": "string"
     }
 }

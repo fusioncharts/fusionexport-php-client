@@ -2,7 +2,7 @@
 
 namespace FusionExport\Converters;
 
-class NumberFromString
+class NumberConverter
 {
     public static function convert($value)
     {
