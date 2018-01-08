@@ -28,7 +28,7 @@ class TemplateBundler
         return $this->templatePathInZip;
     }
 
-    public function getResources() 
+    public function getResourcesZip() 
     {
         return $this->resourcesZipFile;
     }

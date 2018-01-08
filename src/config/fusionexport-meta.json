@@ -11,7 +11,7 @@
     "outputFileDefinition": {
         "isBase64Required": true
     },
-    "resources": {
+    "resourceFilePath": {
         "isBase64Required": true
     }
 }

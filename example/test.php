@@ -39,6 +39,7 @@ $ec->set('chartConfig', 'resources/multiple.json');
 $ec->set('templateFilePath', 'resources/template.html');
 $ec->set('resourceFilePath', 'resources/resource.json');
 $ec->set('dashboardHeading', "Hey there\n col\"gn");
+// $ec->set('asyncCapture', true);
 
 // $payload = $ec->getFormattedConfigs();
 // echo($payload);
@@ -66,6 +67,3 @@ $onDone = function ($event, $e) {
 $exportManager = new ExportManager();
 // Call the export() method with the export config and the respective callbacks
 $exportManager->export($ec, $onDone, $onStateChange);
-  
-
-echo('Done');

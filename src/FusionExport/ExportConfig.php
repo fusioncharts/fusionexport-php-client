@@ -11,11 +11,13 @@ class ExportConfig
 
     public function __construct()
     {
-        $this->metaDataFile = __DIR__ . '/../config/fusionexport-typings.json';
+        $this->typingsFile = __DIR__ . '/../config/fusionexport-typings.json';
+        $this->metaFile = __DIR__ . '/../config/fusionexport-meta.json';
         $this->configs = [];
         $this->formattedConfigs = [];
 
-        $this->readMetaDataConfig();
+        $this->readTypingsConfig();
+        $this->readMetaConfig();
     }
 
     public function set($name, $value)
@@ -31,14 +33,14 @@ class ExportConfig
     {
         $value = $this->configs[$name];
 
-        if (!property_exists($this->metaData, $name)) {
+        if (!property_exists($this->typings, $name)) {
             throw new \Exception($name . ' is not a valid config.');
         }
 
-        $type = $this->metaData->$name->type;
+        $type = $this->typings->$name->type;
 
-        if (property_exists($this->metaData->$name, 'converter')) {
-            $converter = $this->metaData->$name->converter;
+        if (property_exists($this->typings->$name, 'converter')) {
+            $converter = $this->typings->$name->converter;
 
             if ($converter === 'BooleanConverter') {
                 $value = BooleanConverter::convert($value);
@@ -125,40 +127,36 @@ class ExportConfig
         if (isset($this->configs['templateFilePath'])) {
             $tmplBundler = new TemplateBundler(
                 $this->configs['templateFilePath'],
-                @$this->configs['resourceFilePath']
+                @$this->configs['templateFilePath']
             );
 
             $tmplBundler->process();
 
             $this->formattedConfigs['templateFilePath'] = $tmplBundler->getTemplatePathInZip();
-            $this->formattedConfigs['resourceFilePath'] = $tmplBundler->getResourcesZipAsBase64();
+            $this->formattedConfigs['resourceFilePath'] = $tmplBundler->getResourcesZip();
+        }
+
+        if (isset($this->configs['chartConfig'])) {
+            $this->formattedConfigs['chartConfig'] = $this->formatChartConfig($this->configs['chartConfig']);
         }
 
         foreach ($this->configs as $key => $value) {
             switch ($key) {
-                case 'chartConfig': 
-                    $formattedValue = $this->formatChartConfig($value);
-                    break;
-                case 'asyncCapture':
-                case 'exportAsZip':
-                    $formattedValue = $value ? 'true' : 'false';
-                    break;
-                case 'outputFileDefinition': 
-                case 'dashboardLogo':
-                case 'callbackFilePath':
-                case 'inputSVG':
-                    $formattedValue = Helpers::convertFilePathToBase64($value);
-                    break;
-                case 'templateFilePath':
+                case 'templateFilePath': 
                 case 'resourceFilePath':
-                    $formattedValue = null;
+                case 'chartConfig':
                     break;
                 default:
-                    $formattedValue = $value;
+                    $this->formattedConfigs[$key] = $value;
             }
+        }
 
-            if (isset($formattedValue)) {
-                $this->formattedConfigs[$key] = $formattedValue;
+        foreach ($this->formattedConfigs as $key => $value) {
+            if (
+                property_exists($this->meta, $key) && 
+                $this->meta->$key->isBase64Required
+            ) {
+                $this->formattedConfigs[$key] = Helpers::convertFilePathToBase64($value);
             }
         }
     }
@@ -172,8 +170,13 @@ class ExportConfig
         return $value;
     }
 
-    private function readMetaDataConfig()
+    private function readTypingsConfig()
     {
-        $this->metaData = json_decode(file_get_contents($this->metaDataFile));
+        $this->typings = json_decode(file_get_contents($this->typingsFile));
+    }
+
+    private function readMetaConfig()
+    {
+        $this->meta = json_decode(file_get_contents($this->metaFile));
     }
 }
