@@ -120,19 +120,19 @@ class TemplateBundler
             $includeFiles = [];
             $excludeFiles = [];
 
-            $templateDir = dirname(realpath($this->template));
+            $resourcesDir = dirname(realpath($this->resources));
 
             if (isset($this->resourcesData->include)) {
                 $includeFiles = Helpers::globResolve(
                     $this->resourcesData->include, 
-                    $templateDir
+                    $resourcesDir
                 );
             }
 
             if (isset($this->resourcesData->exclude)) {
                 $excludeFiles = Helpers::globResolve(
                     $this->resourcesData->exclude, 
-                    $templateDir
+                    $resourcesDir
                 );
             }
 
