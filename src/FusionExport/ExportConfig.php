@@ -11,7 +11,7 @@ class ExportConfig
 
     public function __construct()
     {
-        $this->metaDataFile = __DIR__ . '/../config/metadata.json';
+        $this->metaDataFile = __DIR__ . '/../config/fusionexport-typings.json';
         $this->configs = [];
         $this->formattedConfigs = [];
 
@@ -122,16 +122,16 @@ class ExportConfig
 
     private function formatConfigs()
     {
-        if (isset($this->configs['template'])) {
+        if (isset($this->configs['templateFilePath'])) {
             $tmplBundler = new TemplateBundler(
-                $this->configs['template'],
-                @$this->configs['resources']
+                $this->configs['templateFilePath'],
+                @$this->configs['resourceFilePath']
             );
 
             $tmplBundler->process();
 
-            $this->formattedConfigs['template'] = $tmplBundler->getTemplatePathInZip();
-            $this->formattedConfigs['resources'] = $tmplBundler->getResourcesZipAsBase64();
+            $this->formattedConfigs['templateFilePath'] = $tmplBundler->getTemplatePathInZip();
+            $this->formattedConfigs['resourceFilePath'] = $tmplBundler->getResourcesZipAsBase64();
         }
 
         foreach ($this->configs as $key => $value) {
@@ -145,12 +145,12 @@ class ExportConfig
                     break;
                 case 'outputFileDefinition': 
                 case 'dashboardLogo':
-                case 'callbacks':
+                case 'callbackFilePath':
                 case 'inputSVG':
                     $formattedValue = Helpers::convertFilePathToBase64($value);
                     break;
-                case 'template':
-                case 'resources':
+                case 'templateFilePath':
+                case 'resourceFilePath':
                     $formattedValue = null;
                     break;
                 default:
