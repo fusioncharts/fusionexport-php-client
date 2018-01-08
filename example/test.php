@@ -5,32 +5,20 @@ ini_set('display_errors', 0);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use FusionExport\ExportConfig;
-use FusionExport\ExportManager;
+// use FusionExport\Helpers;
 
-// $ec = new ExportConfig();
+// $p = 'usr/local/foo.jpg';
+// $b = 'usr/local';
 
-// $ec->set('chartConfig', 'resources/multiple.json');
-// $ec->set('template', 'resources/template.html');
-// $ec->set('resources', 'resources/resource.json');
-// $ec->set('dashboardHeading', "Hey there\n col\"gn");
+// $isChildPath = Helpers::isChildPath($p, $b);
 
-// $key = 'asyncCapture';
-// $val = true;
-// $ec->set($key, $val);
-
-// $key = 'dashboardLogo';
-// $val = 'resources/logo.jpg';
-// $ec->set($key, $val);
-
-// $payload = $ec->getFormattedConfigs();
 
 use FusionExport\TemplateBundler;
 
 $template = 'resources/template.html';
 $resource = 'resources/resource.json';
 
-$tmplBundler = new TemplateBundler($template);
+$tmplBundler = new TemplateBundler($template, $resource);
 $tmplBundler->process();
 
 $templateZipPath = $tmplBundler->getTemplatePathInZip();
@@ -40,6 +28,17 @@ file_put_contents(
     '/Users/jimutdhali/Desktop/resource.zip', 
     base64_decode($resourcesZipAsBase64)
 );
+
+
+// use FusionExport\ExportConfig;
+// use FusionExport\ExportManager;
+
+// $ec = new ExportConfig();
+
+// $ec->set('chartConfig', 'resources/multiple.json');
+// $ec->set('template', 'resources/template.html');
+// $ec->set('resources', 'resources/resource.json');
+// $ec->set('dashboardHeading', "Hey there\n col\"gn");
 
 // $onStateChange = function ($event) {
 //     $state = $event->state;
@@ -65,3 +64,5 @@ file_put_contents(
 // // Call the export() method with the export config and the respective callbacks
 // $exportManager->export($ec, $onDone, $onStateChange);
   
+
+echo('Done');

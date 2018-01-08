@@ -39,6 +39,17 @@ class Helpers
         return implode(DIRECTORY_SEPARATOR, array_slice($pathSpl, $i));
     }
 
+    public static function isChildPath($path, $base)
+    {
+        $path = explode(DIRECTORY_SEPARATOR, $path);
+        $base = explode(DIRECTORY_SEPARATOR, $base);
+        $l = count($base);
+        $i = 0;
+        while ($i < $l && @$path[$i] === @$base[$i]) $i += 1;
+        if ($i === $l) return true;
+        return false;
+    }
+
     public static function resolvePaths($paths, $base)
     {
         if (count($paths) === 0) return [];

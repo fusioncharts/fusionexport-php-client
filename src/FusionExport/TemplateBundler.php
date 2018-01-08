@@ -149,6 +149,11 @@ class TemplateBundler
 
         $this->sanitizeBasePath();
 
+        $this->resourcesFiles = array_filter($this->resourcesFiles, function ($file) {
+            if (Helpers::isChildPath($file, $this->basePath)) return true;
+            return false;
+        });
+
         $this->resourcesFiles = array_map(function ($file) {
             return [
                 'path' => $file,
