@@ -159,6 +159,8 @@ class ExportConfig
                 $this->formattedConfigs[$key] = Helpers::convertFilePathToBase64($value);
             }
         }
+
+        $this->formattedConfigs['clientName'] = 'PHP';
     }
 
     private function formatChartConfig($value)

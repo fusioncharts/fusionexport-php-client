@@ -60,6 +60,7 @@ class Helpers
         chdir($basePath);
 
         $resolvedPaths = array_map(function ($p) {
+            if (!isset($p)) return false;
             return realpath($p);
         }, $paths);
 

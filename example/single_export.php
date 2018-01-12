@@ -10,15 +10,17 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('resources/single.json'));
+$exportConfig->set('chartConfig', realpath('resources/single.json'));
 
 // Called on each export state change
-$onStateChange = function ($state) {
-  echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
+$onStateChange = function ($event) {
+    $state = $event->state;
+    echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
 // Called when export is done
-$onDone = function ($export, $e) {
+$onDone = function ($event, $e) {
+    $export = $event->export;
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
     } else {

@@ -35,10 +35,10 @@ use FusionExport\ExportManager;
 
 $ec = new ExportConfig();
 
-$ec->set('chartConfig', 'resources/multiple.json');
-$ec->set('templateFilePath', 'resources/template.html');
-$ec->set('resourceFilePath', 'resources/resource.json');
-$ec->set('dashboardHeading', "Hey there\n col\"gn");
+$ec->set('chartConfig', 'resources/single.json');
+// $ec->set('templateFilePath', 'resources/template.html');
+// $ec->set('resourceFilePath', 'resources/resource.json');
+// $ec->set('dashboardHeading', "Hey there\n col\"gn");
 // $ec->set('asyncCapture', true);
 
 // $payload = $ec->getFormattedConfigs();

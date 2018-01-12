@@ -13,12 +13,14 @@ $exportConfig = new ExportConfig();
 $exportConfig->set('inputSVG', realpath('resources/vector.svg'));
 
 // Called on each export state change
-$onStateChange = function ($state) {
-  echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
+$onStateChange = function ($event) {
+    $state = $event->state;
+    echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
 // Called when export is done
-$onDone = function ($export, $e) {
+$onDone = function ($event, $e) {
+    $export = $event->export;
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
     } else {
