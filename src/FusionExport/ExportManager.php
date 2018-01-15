@@ -47,6 +47,8 @@ class ExportManager
 
         foreach ($export as $file) {
             $filePath = ExportManager::path_join($dir, $file->realName);
+            $dirname = dirname($filePath);
+            @mkdir($dirname, 0777, true);
             file_put_contents($filePath, base64_decode($file->fileContent));
         }
     }
