@@ -127,7 +127,7 @@ class ExportConfig
         if (isset($this->configs['templateFilePath'])) {
             $tmplBundler = new TemplateBundler(
                 $this->configs['templateFilePath'],
-                @$this->configs['templateFilePath']
+                @$this->configs['resourceFilePath']
             );
 
             $tmplBundler->process();
