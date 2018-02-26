@@ -161,6 +161,11 @@ class ExportConfig
         }
 
         $this->formattedConfigs['clientName'] = 'PHP';
+        
+        $this->formattedConfigs['platform'] = PHP_OS;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->formattedConfigs['platform'] = 'win32';
+        } 
     }
 
     private function formatChartConfig($value)
