@@ -11,7 +11,7 @@ use FusionExport\ExportConfig;
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/single.json'));
-// $exportConfig->set('quality', 'best');
+$exportConfig->set('quality', 'best');
 
 // Called on each export state change
 $onStateChange = function ($event) {
