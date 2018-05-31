@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "70bb607850721f8824158f881aaf250e",
+    "content-hash": "fb3bb6d93bba00ba1917fc915ec185d2",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -261,16 +261,16 @@
         },
         {
             "name": "ratchet/pawl",
-            "version": "v0.3.1",
+            "version": "v0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ratchetphp/Pawl.git",
-                "reference": "f8df4bc1675ca88a4e53bf1872e1e881b6a0b0de"
+                "reference": "85ca3b4a85254cf2ac4309ef42d427820770ae31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ratchetphp/Pawl/zipball/f8df4bc1675ca88a4e53bf1872e1e881b6a0b0de",
-                "reference": "f8df4bc1675ca88a4e53bf1872e1e881b6a0b0de",
+                "url": "https://api.github.com/repos/ratchetphp/Pawl/zipball/85ca3b4a85254cf2ac4309ef42d427820770ae31",
+                "reference": "85ca3b4a85254cf2ac4309ef42d427820770ae31",
                 "shasum": ""
             },
             "require": {
@@ -306,20 +306,20 @@
                 "websocket",
                 "websocket client"
             ],
-            "time": "2017-10-22T21:14:18+00:00"
+            "time": "2018-05-22T21:45:08+00:00"
         },
         {
             "name": "ratchet/rfc6455",
-            "version": "v0.2.3",
+            "version": "0.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ratchetphp/RFC6455.git",
-                "reference": "cc8a1a46a703ce01de10fdb5fab387381b66edc8"
+                "reference": "1612f528c3496ad06e910d0f8b6f16ab97696706"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ratchetphp/RFC6455/zipball/cc8a1a46a703ce01de10fdb5fab387381b66edc8",
-                "reference": "cc8a1a46a703ce01de10fdb5fab387381b66edc8",
+                "url": "https://api.github.com/repos/ratchetphp/RFC6455/zipball/1612f528c3496ad06e910d0f8b6f16ab97696706",
+                "reference": "1612f528c3496ad06e910d0f8b6f16ab97696706",
                 "shasum": ""
             },
             "require": {
@@ -355,7 +355,7 @@
                 "rfc6455",
                 "websocket"
             ],
-            "time": "2017-09-13T13:49:42+00:00"
+            "time": "2018-05-02T14:52:00+00:00"
         },
         {
             "name": "react/cache",
@@ -444,28 +444,27 @@
         },
         {
             "name": "react/event-loop",
-            "version": "v0.4.3",
+            "version": "v0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/event-loop.git",
-                "reference": "8bde03488ee897dc6bb3d91e4e17c353f9c5252f"
+                "reference": "e94985d93c689c554265b01014f8c3064921ca27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/8bde03488ee897dc6bb3d91e4e17c353f9c5252f",
-                "reference": "8bde03488ee897dc6bb3d91e4e17c353f9c5252f",
+                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/e94985d93c689c554265b01014f8c3064921ca27",
+                "reference": "e94985d93c689c554265b01014f8c3064921ca27",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=5.3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.8"
+                "phpunit/phpunit": "~4.8.35 || ^5.7 || ^6.4"
             },
             "suggest": {
-                "ext-event": "~1.0",
-                "ext-libev": "*",
-                "ext-libevent": ">=0.1.0"
+                "ext-event": "~1.0 for ExtEventLoop",
+                "ext-pcntl": "For signal handling support when using the StreamSelectLoop"
             },
             "type": "library",
             "autoload": {
@@ -477,12 +476,12 @@
             "license": [
                 "MIT"
             ],
-            "description": "Event loop abstraction layer that libraries can use for evented I/O.",
+            "description": "ReactPHP's core reactor event loop that libraries can use for evented I/O.",
             "keywords": [
                 "asynchronous",
                 "event-loop"
             ],
-            "time": "2017-04-27T10:56:23+00:00"
+            "time": "2018-04-24T11:23:06+00:00"
         },
         {
             "name": "react/promise",
@@ -532,16 +531,16 @@
         },
         {
             "name": "react/promise-timer",
-            "version": "v1.2.1",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise-timer.git",
-                "reference": "9b4cd9cbe7457e0d87fe8aa7ccceab8a2c830fbd"
+                "reference": "604513e33feb96ffb0dfb3d25233d3f9f0dce356"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/9b4cd9cbe7457e0d87fe8aa7ccceab8a2c830fbd",
-                "reference": "9b4cd9cbe7457e0d87fe8aa7ccceab8a2c830fbd",
+                "url": "https://api.github.com/repos/reactphp/promise-timer/zipball/604513e33feb96ffb0dfb3d25233d3f9f0dce356",
+                "reference": "604513e33feb96ffb0dfb3d25233d3f9f0dce356",
                 "shasum": ""
             },
             "require": {
@@ -581,20 +580,20 @@
                 "timeout",
                 "timer"
             ],
-            "time": "2017-12-22T15:41:41+00:00"
+            "time": "2018-04-24T14:19:26+00:00"
         },
         {
             "name": "react/socket",
-            "version": "v0.8.10",
+            "version": "v0.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/socket.git",
-                "reference": "d3957313c92b539537fccc80170c05a27ec25796"
+                "reference": "94e98bb4def7054454784b330e44f73b7f6c160f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/socket/zipball/d3957313c92b539537fccc80170c05a27ec25796",
-                "reference": "d3957313c92b539537fccc80170c05a27ec25796",
+                "url": "https://api.github.com/repos/reactphp/socket/zipball/94e98bb4def7054454784b330e44f73b7f6c160f",
+                "reference": "94e98bb4def7054454784b330e44f73b7f6c160f",
                 "shasum": ""
             },
             "require": {
@@ -628,7 +627,7 @@
                 "reactphp",
                 "stream"
             ],
-            "time": "2018-02-28T09:32:38+00:00"
+            "time": "2018-04-24T14:07:53+00:00"
         },
         {
             "name": "react/stream",
