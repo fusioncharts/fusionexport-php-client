@@ -1,6 +1,6 @@
 <?php
 
-// Async capture
+// Exporting a chart with best quality
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -11,8 +11,7 @@ use FusionExport\ExportConfig;
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/single.json'));
-$exportConfig->set('callbackFilePath', realpath('resources/expand_scroll.js'));
-$exportConfig->set('asyncCapture', 'true');
+$exportConfig->set('quality', 'best');
 
 // Called on each export state change
 $onStateChange = function ($event) {

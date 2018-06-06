@@ -1,6 +1,6 @@
 <?php
 
-// Using the licensed FusionCharts library for export
+// D3 export
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -10,23 +10,27 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('resources/single.json'));
-$exportConfig->set('libraryDirectoryPath', 'licensed/fusioncharts');
+$exportConfig->set('templateFilePath', realpath('resources/template_d3.html'));
+$exportConfig->set('type', 'jpg');
+$exportConfig->set('asyncCapture', 'true');
 
 // Called on each export state change
-$onStateChange = function ($state) {
-  echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
+$onStateChange = function ($event) {
+    $state = $event->state;
+    echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
 // Called when export is done
-$onDone = function ($export, $e) {
+$onDone = function ($event, $e) {
+    $export = $event->export;
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
     } else {
         foreach ($export as $file) {
-            echo('DONE: ' . $file->realName . "\n");
-            copy($file->tmpPath, $file->realName);
+            echo('DONE: ' . $file->realName. "\n");
         }
+
+        ExportManager::saveExportedFiles($export);
     }
 };
 

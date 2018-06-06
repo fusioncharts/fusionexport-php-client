@@ -10,24 +10,27 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', file_get_contents('resources/multiple.json'));
+$exportConfig->set('chartConfig', realpath('resources/multiple.json'));
 $exportConfig->set('templateFilePath', realpath('resources/template.html'));
 $exportConfig->set('callbackFilePath', realpath('resources/callback.js'));
 
 // Called on each export state change
-$onStateChange = function ($state) {
-  echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
+$onStateChange = function ($event) {
+    $state = $event->state;
+    echo('STATE: [' . $state->reporter . '] ' . $state->customMsg . "\n");
 };
 
 // Called when export is done
-$onDone = function ($export, $e) {
+$onDone = function ($event, $e) {
+    $export = $event->export;
     if ($e) {
         echo('ERROR: ' . $e->getMessage());
     } else {
         foreach ($export as $file) {
-            echo('DONE: ' . $file->realName . "\n");
-            copy($file->tmpPath, $file->realName);
+            echo('DONE: ' . $file->realName. "\n");
         }
+
+        ExportManager::saveExportedFiles($export);
     }
 };
 
