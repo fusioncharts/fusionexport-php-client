@@ -22,6 +22,7 @@
     "require": {
         "php": "^7.0",
         "ratchet/pawl": "^0.3.1",
-        "paquettg/php-html-parser": "^1.7"
+        "paquettg/php-html-parser": "^1.7",
+		"aws/aws-sdk-php": "^3.61"
     }
 }
