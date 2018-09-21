@@ -17,13 +17,13 @@ class ExportManager
         $this->port = $port;
     }
 
-    public function export(ExportConfig $exportConfig, $exportDoneListener = null, $exportStateChangedListener = null)
+    public function export(ExportConfig $exportConfig,$outputDir = '.', $unzip = false)
     {
-        $exporter = new Exporter($exportConfig, $exportDoneListener, $exportStateChangedListener);
+        $exporter = new Exporter($exportConfig);
 
         $exporter->setExportConnectionConfig($this->host, $this->port);
 
-        $exporter->start();
+        $exporter->start($outputDir, $unzip);
 
         return $exporter;
     }
