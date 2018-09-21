@@ -268,6 +268,10 @@ class ExportConfig
 			if(isset($commonDirectoryPath)){
 				$baseDirectoryPath = $commonDirectoryPath;
 			}
+			if(strlen($baseDirectoryPath) == 0){
+				$baseDirectoryPath = dirname($templateFilePath);
+			}
+			
 		}
 		$mapExtractedPathAbsToRel = array();
 		foreach($listExtractedPaths as $tmpPath){
@@ -307,7 +311,10 @@ class ExportConfig
 		$fileName = $realPath. DIRECTORY_SEPARATOR ."fcexport.zip";
 		$zipFile->open($fileName, \ZipArchive::CREATE);
 		foreach ($fileBag as $files) {
-			$zipFile->addFile($files->externalPath, $files->internalPath);
+			if(strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0){
+				$zipFile->addFile($files->externalPath, $files->internalPath);
+			}
+			
 		}
 		$zipFile->close();
 		return $fileName;
