@@ -62,7 +62,6 @@ class Exporter
 		
     }
 	private function saveResponse($contents,$outputDir,$unzip){
-		print_r($outputDir);
 		$zipFile = new \ZipArchive();
 		$fileName = $outputDir . DIRECTORY_SEPARATOR . "fusioncharts_export.zip";
 		file_put_contents($fileName, $contents);
