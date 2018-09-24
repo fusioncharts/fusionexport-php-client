@@ -159,7 +159,7 @@ class ExportConfig
 					$internalFilePath = "logo." . pathinfo($this->configs['dashboardLogo'], PATHINFO_EXTENSION);
 					$obj->internalPath = $internalFilePath;
 					$obj->externalPath = $this->configs['dashboardLogo'];
-					$this->formattedConfigs['dashboardlogo'] = $internalFilePath;
+					$this->formattedConfigs['dashboardLogo'] = $internalFilePath;
 					array_push($zipBag,$obj);
 					break;
 				case "templateFilePath":					
