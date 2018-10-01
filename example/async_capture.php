@@ -17,4 +17,4 @@ $exportConfig->set('asyncCapture', 'true');
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config and the respective callbacks
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

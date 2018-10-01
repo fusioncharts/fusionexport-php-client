@@ -17,7 +17,7 @@ class ExportManager
         $this->port = $port;
     }
 
-    public function export(ExportConfig $exportConfig,$outputDir = '.', $unzip = false)
+    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = false)
     {
         $exporter = new Exporter($exportConfig);
 

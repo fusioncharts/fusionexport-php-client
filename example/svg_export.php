@@ -12,8 +12,7 @@ use FusionExport\ExportConfig;
 $exportConfig = new ExportConfig();
 $exportConfig->set('inputSVG', realpath('resources/vector.svg'));
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

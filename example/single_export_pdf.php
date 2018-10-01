@@ -12,8 +12,7 @@ $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/single.json'));
 $exportConfig->set('type', 'pdf');
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

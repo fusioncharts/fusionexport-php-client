@@ -14,8 +14,7 @@ $exportConfig->set('templateFilePath', realpath('resources/template_d3.html'));
 $exportConfig->set('type', 'jpg');
 $exportConfig->set('asyncCapture', 'true');
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

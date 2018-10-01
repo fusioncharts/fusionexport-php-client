@@ -12,8 +12,6 @@ use FusionExport\ExportConfig;
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/multiple.json'));
 $exportConfig->set('outputFile', 'php-export-<%= number(5) %>');
-$exportConfig->set('exportAsZip', true);
-
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();

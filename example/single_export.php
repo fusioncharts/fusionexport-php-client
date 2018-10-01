@@ -15,4 +15,4 @@ $exportConfig->set('chartConfig', realpath('resources/single.json'));
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

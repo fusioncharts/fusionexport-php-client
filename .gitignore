@@ -38,6 +38,7 @@ Temporary Items
 # End of https://www.gitignore.io/api/macos,composer
 
 .idea
+php-export-*.*
 export--*.*
 fusioncharts_export.*
 example/test.php

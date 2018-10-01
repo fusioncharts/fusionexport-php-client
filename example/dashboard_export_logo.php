@@ -16,8 +16,7 @@ $exportConfig->set('dashboardLogo', realpath('resources/logo.jpg'));
 $exportConfig->set('dashboardHeading', 'FusionCharts');
 $exportConfig->set('dashboardSubheading', 'The best charting library in the world');
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

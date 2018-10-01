@@ -12,8 +12,7 @@ $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/multiple.json'));
 $exportConfig->set('templateFilePath', realpath('resources/template.html'));
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);

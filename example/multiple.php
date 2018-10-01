@@ -13,8 +13,7 @@ $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath('resources/multiple.json'));
 $exportConfig->set('outputFile', 'php-export-<%= number(5) %>');
 
-
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config and the respective callbacks
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);
