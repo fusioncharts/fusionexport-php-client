@@ -14,5 +14,5 @@ $exportConfig->set('templateFilePath', realpath('resources/template.html'));
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
-
+// Call the export() method with the export config
 $exportManager->export($exportConfig, '.', true);

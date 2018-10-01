@@ -15,5 +15,5 @@ $exportConfig->set('outputFile', 'php-export-<%= number(5) %>');
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
-// Call the export() method with the export config and the respective callbacks
+// Call the export() method with the export config
 $exportManager->export($exportConfig, '.', true);
