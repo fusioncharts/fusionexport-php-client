@@ -14,13 +14,12 @@ class Exporter
 
     private $exportServerPort;
 
-    private $wsClient;
+    private $client;
 
-    public function __construct(ExportConfig $exportConfig, $exportDoneListener, $exportStateChangedListener)
+    public function __construct(ExportConfig $exportConfig)
     {
         $this->exportConfig = $exportConfig;
-        $this->exportDoneListener = $exportDoneListener;
-        $this->exportStateChangedListener = $exportStateChangedListener;
+        
     }
 
     public function setExportConnectionConfig($exportServerHost, $exportServerPort)
@@ -28,66 +27,56 @@ class Exporter
         $this->exportServerHost = $exportServerHost;
         $this->exportServerPort = $exportServerPort;
     }
-
-    public function start()
+	private function createMultipartdata($configData)
+	{
+		$multipart = array();
+		if(count($configData)>0){
+			foreach($configData as $key => $value){
+				$arr = array();
+				$arr['name'] = $key;
+				if(strcasecmp($key,'payload') == 0){
+					$arr['contents'] = fopen($value,'r');
+				}else{
+					$arr['contents'] = $value;
+				}
+				array_push($multipart,$arr);
+			}
+		}
+		return $multipart;
+	}
+    public function start($outputDir,$unzip)
     {
-        $connString = 'ws://' . $this->exportServerHost . ':' . $this->exportServerPort;
-
-        \Ratchet\Client\connect($connString)->then(function ($conn) {
-
-            $this->wsClient = $conn;
-
-            $this->wsClient->on('message', function ($data) {
-                $this->processDataReceived($data);
-            });
-
-            $this->wsClient->send($this->getFormattedExportConfigs());
-
-        }, function ($e) {
-
-            $this->onExportDone(null, $e);
-
-        });
+        $this->client = new \GuzzleHttp\Client();
+		
+		$configData = $this->getFormattedExportConfigs();
+		$url = $this->exportServerHost . ':' . $this->exportServerPort . "/api/v2.0/export";
+		$multipartArray = $this->createMultipartdata($configData);
+		$response = $this->client->request('POST', $url, [
+			'multipart' =>
+				$multipartArray
+		]);
+		$this->saveResponse($response->getBody()->getContents(),$outputDir,$unzip);
+		if(isset($configData['payload'])){
+			unlink($configData['payload']);
+		}
+		
     }
-
-    public function cancel()
-    {
-        if (!is_null($this->wsClient)) {
-            $this->wsClient->close();
-        }
-    }
-
-    private function processDataReceived($data)
-    {
-        if ($this->startsWith($data, Constants::EXPORT_EVENT)) {
-
-            $this->processExportStateChangedData($data);
-
-        } else if ($this->startsWith($data, Constants::EXPORT_DATA)) {
-
-            $this->processExportDoneData($data);
-
-        }
-    }
-
-    private function processExportStateChangedData($data)
-    {
-        $state = substr($data, strlen(Constants::EXPORT_EVENT));
-        $exportError = $this->checkExportError($state);
-
-        if (is_null($exportError)) {
-            $this->onExportSateChanged(json_decode($state));
-        } else {
-            $this->onExportDone(null, new \Exception($exportError));
-        }
-    }
-
-    private function processExportDoneData($data)
-    {
-        $exportResult = substr($data, strlen(Constants::EXPORT_DATA));
-        $this->onExportDone(json_decode($exportResult)->data);
-    }
-
+	private function saveResponse($contents,$outputDir,$unzip){
+		$zipFile = new \ZipArchive();
+		$fileName = $outputDir . DIRECTORY_SEPARATOR . "fusioncharts_export.zip";
+		file_put_contents($fileName, $contents);
+		if($unzip == TRUE){
+			
+			if($zipFile->open($fileName) == TRUE){
+				$zipFile->extractTo($outputDir);
+				$zipFile->close();
+				unlink($fileName);
+			}
+			
+		}
+		
+		
+	}
     private function checkExportError($exportResult)
     {
         $exportResult = json_decode($exportResult);
@@ -97,33 +86,9 @@ class Exporter
         }
     }
 
-    private function onExportSateChanged($data)
+   private function getFormattedExportConfigs()
     {
-        if (is_null($this->exportStateChangedListener)) return;
-
-        $event = (object) [
-            'state' => $data,
-        ];
-
-        call_user_func($this->exportStateChangedListener, $event);
-    }
-
-    private function onExportDone($data, \Exception $e = null)
-    {
-        $this->cancel();
-
-        if (is_null($this->exportDoneListener)) return;
-
-        $event = (object) [
-            'export' => $data,
-        ];
-
-        call_user_func($this->exportDoneListener, $event, $e);
-    }
-
-    private function getFormattedExportConfigs()
-    {
-        return 'ExportManager.export<=:=>' . $this->exportConfig->getFormattedConfigs();
+        return $this->exportConfig->getFormattedConfigs();
     }
 
     private function startsWith($haystack, $needle)

@@ -1,6 +1,6 @@
 <?php
 
-// Exporting the Output Files as Zip
+// D3 export
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -10,10 +10,11 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', realpath('resources/multiple.json'));
-$exportConfig->set('outputFile', 'php-export-<%= number(5) %>');
+$exportConfig->set('templateFilePath', realpath('resources/template_googlecharts.html'));
+$exportConfig->set('type', 'jpg');
+$exportConfig->set('asyncCapture', 'true');
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config
-$exportManager->export($exportConfig);
+$exportManager->export($exportConfig, '.', true);
