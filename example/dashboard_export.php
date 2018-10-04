@@ -9,10 +9,14 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', realpath('resources/multiple.json'));
-$exportConfig->set('templateFilePath', realpath('resources/template.html'));
+$exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/multiple.json'));
+$exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/template.html'));
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config
-$exportManager->export($exportConfig, '.', true);
+$files = $exportManager->export($exportConfig, '.', true);
+
+foreach ($files as $file) {
+    echo $file . "\n";
+}
