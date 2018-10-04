@@ -28,24 +28,26 @@ class Exporter
         $this->exportServerPort = $exportServerPort;
     }
 
-    public function start($outputDir,$unzip)
+    public function start($outputDir, $unzip)
     {
         $this->client = new \GuzzleHttp\Client();
         
         $configData = $this->getFormattedExportConfigs();
         $url = $this->exportServerHost . ':' . $this->exportServerPort . "/api/v2.0/export";
-        $multipartArray = $this->createMultipartdata($configData);
+        $multipartArray = $this->createMultipartData($configData);
+        
         $response = $this->client->request('POST', $url, [
             'multipart' => $multipartArray
         ]);
-        $this->saveResponse($response->getBody()->getContents(),$outputDir,$unzip);
+
         if (isset($configData['payload'])) {
             unlink($configData['payload']);
         }
-        
+
+        return $this->saveResponse($response->getBody()->getContents(), $outputDir, $unzip);
     }
     
-    private function createMultipartdata($configData)
+    private function createMultipartData($configData)
     {
         $multipart = array();
         if(count($configData)>0){
@@ -63,22 +65,34 @@ class Exporter
         return $multipart;
     }
     
-    private function saveResponse($contents,$outputDir,$unzip)
+    private function saveResponse($contents, $outputDir, $unzip)
     {
-        $zipFile = new \ZipArchive();
+        $exportedFiles = [];
+
         $fileName = $outputDir . DIRECTORY_SEPARATOR . "fusioncharts_export.zip";
         file_put_contents($fileName, $contents);
-        if($unzip == TRUE){
-            
-            if($zipFile->open($fileName) == TRUE){
-                $zipFile->extractTo($outputDir);
-                $zipFile->close();
-                unlink($fileName);
-            }
-            
+        $exportedFiles[] = realpath($fileName);
+
+        if (!$unzip) return $exportedFiles;
+
+        $zipFile = new \ZipArchive();
+        $exportedFiles = [];
+
+        if (!$zipFile->open($fileName)) {
+            throw new \Exception('Failed to open exported archive file');
         }
         
+        $zipFile->extractTo($outputDir);
+
+        for ($i = 0; $i < $zipFile->numFiles; $i++) {
+            $path = realpath($outputDir . DIRECTORY_SEPARATOR . $zipFile->getNameIndex($i));
+            $exportedFiles[] = $path;
+        }
         
+        $zipFile->close();
+        unlink($fileName);
+
+        return $exportedFiles;
     }
 
     private function checkExportError($exportResult)

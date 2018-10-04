@@ -5,11 +5,13 @@ namespace FusionExport;
 use FusionExport\Converters\NumberConverter;
 use FusionExport\Converters\BooleanConverter;
 use PHPHtmlParser\Dom;
+
 class ResourcePathInfo 
 {
     public $internalPath;
     public $externalPath;
 }
+
 class ExportConfig
 {
     protected $configs;
@@ -33,33 +35,6 @@ class ExportConfig
         $this->sanitizeConfig($name);
 
         return $this;
-    }
-
-    private function sanitizeConfig($name)
-    {
-        $value = $this->configs[$name];
-
-        if (!property_exists($this->typings, $name)) {
-            throw new \Exception($name . ' is not a valid config.');
-        }
-
-        $type = $this->typings->$name->type;
-
-        if (property_exists($this->typings->$name, 'converter')) {
-            $converter = $this->typings->$name->converter;
-
-            if ($converter === 'BooleanConverter') {
-                $value = BooleanConverter::convert($value);
-            } else if ($converter === 'NumberConverter') {
-                $value = NumberConverter::convert($value);
-            }
-        }
-
-        if (gettype($value) !== $type) {
-            throw new \Exception($name . ' must be a ' . $type . '.');
-        }
-
-        $this->configs[$name] = $value;
     }
 
     public function get($name)
@@ -98,7 +73,7 @@ class ExportConfig
         return array_values($this->configs);
     }
 
-    public function clone()
+    public function cloneConfig()
     {
         $newExportConfig = new ExportConfig();
 
@@ -113,6 +88,33 @@ class ExportConfig
     {    
         $this->formatConfigs();
         return $this->formattedConfigs;
+    }
+
+    private function sanitizeConfig($name)
+    {
+        $value = $this->configs[$name];
+
+        if (!property_exists($this->typings, $name)) {
+            throw new \Exception($name . ' is not a valid config.');
+        }
+
+        $type = $this->typings->$name->type;
+
+        if (property_exists($this->typings->$name, 'converter')) {
+            $converter = $this->typings->$name->converter;
+
+            if ($converter === 'BooleanConverter') {
+                $value = BooleanConverter::convert($value);
+            } else if ($converter === 'NumberConverter') {
+                $value = NumberConverter::convert($value);
+            }
+        }
+
+        if (gettype($value) !== $type) {
+            throw new \Exception($name . ' must be a ' . $type . '.');
+        }
+
+        $this->configs[$name] = $value;
     }
     
     private function endswith($string, $test) 
@@ -304,7 +306,7 @@ class ExportConfig
         return $listFilePath;
     }
     
-    function getRelativePath($from, $to)
+    private function getRelativePath($from, $to)
     {
         $internalPath = ltrim(trim(str_replace($to,'',$from),DIRECTORY_SEPARATOR));
         return trim($internalPath);
