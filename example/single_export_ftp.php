@@ -2,7 +2,7 @@
 
 // Exporting a chart
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Use the sdk
 use FusionExport\ExportManager;
