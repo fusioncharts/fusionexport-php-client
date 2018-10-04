@@ -1,7 +1,7 @@
 <?php
 
 namespace FusionExport;
-require realpath(__DIR__ . '/../../../../../').'/vendor/autoload.php';
+
 use \Aws\S3\S3Client;
 use \Aws\S3\Exception\S3Exception;
 use \Aws\Credentials\Credentials;
@@ -27,9 +27,7 @@ class ExportManager
 
         $exporter->setExportConnectionConfig($this->host, $this->port);
 
-        $exporter->start($outputDir, $unzip);
-
-        return $exporter;
+        return $exporter->start($outputDir, $unzip);
     }
 
     public static function path_join(...$paths) 
