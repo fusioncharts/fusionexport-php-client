@@ -12,6 +12,10 @@ files = files.filter((file) => {
 
 files.forEach((file) => {
   console.log(`Running ${file}\n`);
-  const stdout = execFileSync('php', [file], { cwd: __dirname });
-  console.log(`${stdout.toString()}\n`);
+  try {
+    const stdout = execFileSync('php', [file], { cwd: __dirname });
+    console.log(`${stdout.toString()}\n`);
+  } catch (e) {
+    console.error(`${e.message}\n`);
+  }
 });
