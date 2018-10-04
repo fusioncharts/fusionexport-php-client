@@ -6,16 +6,14 @@ use FusionExport\Converters\NumberConverter;
 use FusionExport\Converters\BooleanConverter;
 use PHPHtmlParser\Dom;
 class ResourcePathInfo 
-{ 
-	public $internalPath;
-	public $externalPath;
-	
-} 
+{
+    public $internalPath;
+    public $externalPath;
+}
 class ExportConfig
 {
     protected $configs;
-	
-	
+    
     public function __construct()
     {
         $this->typingsFile = __DIR__ . '/../config/fusionexport-typings.json';
@@ -25,7 +23,7 @@ class ExportConfig
 
         $this->readTypingsConfig();
         $this->readMetaConfig();
-		$this->collectedResources = array();
+        $this->collectedResources = array();
     }
 
     public function set($name, $value)
@@ -112,87 +110,90 @@ class ExportConfig
     }
 
     public function getFormattedConfigs()
-    {	
-		$this->formatConfigs();
-		return $this->formattedConfigs;
+    {    
+        $this->formatConfigs();
+        return $this->formattedConfigs;
     }
-	private function endswith($string, $test) {
-		$strlen = strlen($string);
-		$testlen = strlen($test);
-		if ($testlen > $strlen) return false;
-		return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
-	}
+    
+    private function endswith($string, $test) 
+    {
+        $strlen = strlen($string);
+        $testlen = strlen($test);
+        if ($testlen > $strlen) return false;
+        return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+    }
+    
     private function formatConfigs()
     {
-		$zipBag = array();
-		foreach($this->configs as $key=> $value)
-		{
-			switch($key)
-			{
-				case "chartConfig":
-					if($this->endswith($this->configs['chartConfig'], '.json'))
-					{
-						$this->formattedConfigs['chartConfig'] = file_get_contents($this->configs['chartConfig']);
-					}
-					else{
-						$this->formattedConfigs['chartConfig'] = $this->configs['chartConfig'];
-					}
-					break;
-				case "inputSVG":
-					$obj = new ResourcePathInfo;
-					$internalFilePath = "inputSVG.svg";
-					$obj->internalPath = $internalFilePath;
-					$obj->externalPath = $this->configs['inputSVG'];
-					$this->formattedConfigs['inputSVG'] = $internalFilePath;
-					array_push($zipBag,$obj);
-					break;
-				case "callbackFilePath":
-					$obj = new ResourcePathInfo;
-					$internalFilePath = "callbackFile.js";
-					$this->formattedConfigs['callbackFilePath'] = $internalFilePath;
-					$obj->internalPath = $internalFilePath;
-					$obj->externalPath = $this->configs['callbackFilePath'];
-					array_push($zipBag,$obj);
-					break;
-				case "dashboardLogo":
-					$obj = new ResourcePathInfo;
-					$internalFilePath = "logo." . pathinfo($this->configs['dashboardLogo'], PATHINFO_EXTENSION);
-					$obj->internalPath = $internalFilePath;
-					$obj->externalPath = $this->configs['dashboardLogo'];
-					$this->formattedConfigs['dashboardLogo'] = $internalFilePath;
-					array_push($zipBag,$obj);
-					break;
-				case "templateFilePath":					
-					$templatePathWithinZip = '';
-					$zipPaths = array();
-					$this->createTemplateZipPaths($zipPaths,$templatePathWithinZip);
-					$this->formattedConfigs['templateFilePath'] = $templatePathWithinZip;
-					foreach($zipPaths as $path)
-					{
-						array_push($zipBag,$path);
-					}
-					break;
-				case "outputFileDefinition":
-					$this->formattedConfigs['outputFileDefinition'] = file_get_contents($this->configs['outputFileDefinition']);
-					break;
-				case "asyncCapture":
-					if(empty($this->configs['asyncCapture']) < 1){
-						if(strtolower($this->configs['asyncCapture']) == "true"){
-							$this->formattedConfigs['asyncCapture'] = "true";
-						}
-						else{
-							$this->formattedConfigs['asyncCapture'] = "false";
-						}
-					}
-					break;
-				default: 
-					$this->formattedConfigs[$key] = $this->configs[$key];
-			}
-		}
-		if(count($zipBag)> 0){
-			$zipFile = $this->generateZip($zipBag);
-			$this->formattedConfigs['payload'] = $zipFile;
-		}
+        $zipBag = array();
+        foreach($this->configs as $key=> $value)
+        {
+            switch($key)
+            {
+                case "chartConfig":
+                    if($this->endswith($this->configs['chartConfig'], '.json'))
+                    {
+                        $this->formattedConfigs['chartConfig'] = file_get_contents($this->configs['chartConfig']);
+                    }
+                    else{
+                        $this->formattedConfigs['chartConfig'] = $this->configs['chartConfig'];
+                    }
+                    break;
+                case "inputSVG":
+                    $obj = new ResourcePathInfo;
+                    $internalFilePath = "inputSVG.svg";
+                    $obj->internalPath = $internalFilePath;
+                    $obj->externalPath = $this->configs['inputSVG'];
+                    $this->formattedConfigs['inputSVG'] = $internalFilePath;
+                    array_push($zipBag,$obj);
+                    break;
+                case "callbackFilePath":
+                    $obj = new ResourcePathInfo;
+                    $internalFilePath = "callbackFile.js";
+                    $this->formattedConfigs['callbackFilePath'] = $internalFilePath;
+                    $obj->internalPath = $internalFilePath;
+                    $obj->externalPath = $this->configs['callbackFilePath'];
+                    array_push($zipBag,$obj);
+                    break;
+                case "dashboardLogo":
+                    $obj = new ResourcePathInfo;
+                    $internalFilePath = "logo." . pathinfo($this->configs['dashboardLogo'], PATHINFO_EXTENSION);
+                    $obj->internalPath = $internalFilePath;
+                    $obj->externalPath = $this->configs['dashboardLogo'];
+                    $this->formattedConfigs['dashboardLogo'] = $internalFilePath;
+                    array_push($zipBag,$obj);
+                    break;
+                case "templateFilePath":                    
+                    $templatePathWithinZip = '';
+                    $zipPaths = array();
+                    $this->createTemplateZipPaths($zipPaths,$templatePathWithinZip);
+                    $this->formattedConfigs['templateFilePath'] = $templatePathWithinZip;
+                    foreach($zipPaths as $path)
+                    {
+                        array_push($zipBag,$path);
+                    }
+                    break;
+                case "outputFileDefinition":
+                    $this->formattedConfigs['outputFileDefinition'] = file_get_contents($this->configs['outputFileDefinition']);
+                    break;
+                case "asyncCapture":
+                    if(empty($this->configs['asyncCapture']) < 1){
+                        if(strtolower($this->configs['asyncCapture']) == "true"){
+                            $this->formattedConfigs['asyncCapture'] = "true";
+                        }
+                        else{
+                            $this->formattedConfigs['asyncCapture'] = "false";
+                        }
+                    }
+                    break;
+                default: 
+                    $this->formattedConfigs[$key] = $this->configs[$key];
+            }
+        }
+        if(count($zipBag)> 0){
+            $zipFile = $this->generateZip($zipBag);
+            $this->formattedConfigs['payload'] = $zipFile;
+        }
         $this->formattedConfigs['clientName'] = 'PHP';
         
         $this->formattedConfigs['platform'] = PHP_OS;
@@ -200,13 +201,14 @@ class ExportConfig
             $this->formattedConfigs['platform'] = 'win32';
         } 
     }
-	private function findResources()
+    
+    private function findResources()
     {
         $dom = new Dom();
         $dom->setOptions([ 
             'removeScripts' => false,
         ]);
-		$dom->load(file_get_contents($this->configs['templateFilePath']));
+        $dom->load(file_get_contents($this->configs['templateFilePath']));
 
         $links = $dom->find('link')->toArray();
         $scripts = $dom->find('script')->toArray();
@@ -225,7 +227,7 @@ class ExportConfig
         }, $imgs);
 
         $this->collectedResources = array_merge($links, $scripts, $imgs);
-		$this->collectedResources = Helpers::resolvePaths(
+        $this->collectedResources = Helpers::resolvePaths(
             $this->collectedResources, 
             dirname(realpath($this->configs['templateFilePath']))
         );
@@ -233,9 +235,10 @@ class ExportConfig
         $this->collectedResources = array_unique($this->collectedResources);
         
         $this->removeRemoteResources();
-		return $this->collectedResources;
+        return $this->collectedResources;
     }
-	private function removeRemoteResources() 
+    
+    private function removeRemoteResources() 
     {
         $this->collectedResources = array_filter(
             $this->collectedResources, 
@@ -251,74 +254,79 @@ class ExportConfig
         );
     }
 
-	private function createTemplateZipPaths(&$outZipPaths,&$outTemplatePathWithinZip)
-	{
-		$templatePathWithinZip ='';
-		$listExtractedPaths = array();
-		$listExtractedPaths = $this->findResources();
-		$listResourcePaths = array();
-		$baseDirectoryPath = null;
-		if(isset($this->configs['resourceFilePath'])){
-			Helpers::globResolve($listResourcePaths, $baseDirectoryPath,$this->configs[resourceFilePath]);
-		}
-		$templateFilePath = realpath($this->configs['templateFilePath']);
-		if (!isset($baseDirectoryPath)) {
-			array_push($listExtractedPaths,$templateFilePath);
-			$commonDirectoryPath = Helpers::findCommonPath($listExtractedPaths);
-			if(isset($commonDirectoryPath)){
-				$baseDirectoryPath = $commonDirectoryPath;
-			}
-			if(strlen($baseDirectoryPath) == 0){
-				$baseDirectoryPath = dirname($templateFilePath);
-			}
-			
-		}
-		$mapExtractedPathAbsToRel = array();
-		foreach($listExtractedPaths as $tmpPath){
-			$mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
-		}
-		foreach($listResourcePaths as $tmpPath){
-			$mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
-		}
-		$templateFilePathWithinZipRel = $this->getRelativePath($templateFilePath,$baseDirectoryPath);
-		$mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
-		$zipPaths = array();
-		$zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel,$baseDirectoryPath);
-		$templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
-		$outZipPaths = $zipPaths;
+    private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
+    {
+        $templatePathWithinZip ='';
+        $listExtractedPaths = array();
+        $listExtractedPaths = $this->findResources();
+        $listResourcePaths = array();
+        $baseDirectoryPath = null;
+        if(isset($this->configs['resourceFilePath'])){
+            Helpers::globResolve($listResourcePaths, $baseDirectoryPath,$this->configs[resourceFilePath]);
+        }
+        $templateFilePath = realpath($this->configs['templateFilePath']);
+        if (!isset($baseDirectoryPath)) {
+            array_push($listExtractedPaths,$templateFilePath);
+            $commonDirectoryPath = Helpers::findCommonPath($listExtractedPaths);
+            if(isset($commonDirectoryPath)){
+                $baseDirectoryPath = $commonDirectoryPath;
+            }
+            if(strlen($baseDirectoryPath) == 0){
+                $baseDirectoryPath = dirname($templateFilePath);
+            }
+            
+        }
+        $mapExtractedPathAbsToRel = array();
+        foreach($listExtractedPaths as $tmpPath){
+            $mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
+        }
+        foreach($listResourcePaths as $tmpPath){
+            $mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
+        }
+        $templateFilePathWithinZipRel = $this->getRelativePath($templateFilePath,$baseDirectoryPath);
+        $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
+        $zipPaths = array();
+        $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel,$baseDirectoryPath);
+        $templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
+        $outZipPaths = $zipPaths;
         $outTemplatePathWithinZip = $templatePathWithinZip;
-	}
-	private function generatePathForZip($listAllFilePaths,$baseDirectoryPath){
-		$listFilePath = array();
-		foreach($listAllFilePaths as $key => $value){
-			$obj = new ResourcePathInfo;
-			$obj->internalPath = $value;
-			$obj->externalPath = $key;
-			array_push($listFilePath,$obj);
-		}
-		return $listFilePath;
-	}
-	function getRelativePath($from, $to)
-	{
-		$internalPath = ltrim(trim(str_replace($to,'',$from),DIRECTORY_SEPARATOR));
-		return trim($internalPath);
-	}
-	private function generateZip($fileBag)
-	{
-		
-		$zipFile = new \ZipArchive();
-		$realPath = realpath(sys_get_temp_dir());
-		$fileName = $realPath. DIRECTORY_SEPARATOR ."fcexport.zip";
-		$zipFile->open($fileName, \ZipArchive::CREATE);
-		foreach ($fileBag as $files) {
-			if(strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0){
-				$zipFile->addFile($files->externalPath, $files->internalPath);
-			}
-			
-		}
-		$zipFile->close();
-		return $fileName;
-	}
+    }
+    
+    private function generatePathForZip($listAllFilePaths, $baseDirectoryPath)
+    {
+        $listFilePath = array();
+        foreach($listAllFilePaths as $key => $value){
+            $obj = new ResourcePathInfo;
+            $obj->internalPath = $value;
+            $obj->externalPath = $key;
+            array_push($listFilePath,$obj);
+        }
+        return $listFilePath;
+    }
+    
+    function getRelativePath($from, $to)
+    {
+        $internalPath = ltrim(trim(str_replace($to,'',$from),DIRECTORY_SEPARATOR));
+        return trim($internalPath);
+    }
+    
+    private function generateZip($fileBag)
+    {
+        
+        $zipFile = new \ZipArchive();
+        $realPath = realpath(sys_get_temp_dir());
+        $fileName = $realPath. DIRECTORY_SEPARATOR ."fcexport.zip";
+        $zipFile->open($fileName, \ZipArchive::CREATE);
+        foreach ($fileBag as $files) {
+            if(strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0){
+                $zipFile->addFile($files->externalPath, $files->internalPath);
+            }
+            
+        }
+        $zipFile->close();
+        return $fileName;
+    }
+    
     private function readTypingsConfig()
     {
         $this->typings = json_decode(file_get_contents($this->typingsFile));

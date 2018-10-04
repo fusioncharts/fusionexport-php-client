@@ -9,7 +9,7 @@ use \Aws\Credentials\Credentials;
 class ExportManager
 {
     private $host;
-
+    
     private $port;
 
     public function __construct(
@@ -45,16 +45,41 @@ class ExportManager
         return join(DIRECTORY_SEPARATOR, $saPaths);
     }
 
-    public static function saveExportedFiles($export, $dir = '.')
-    {
-        @mkdir($dir, 0777, true);
+    public static function isDirectory($conn_id, $dir) 
+    { 
+        if(@ftp_chdir($conn_id,$dir)) { 
+            ftp_cdup($conn_id); 
+            return true; 
+        } else { 
+            return false; 
+        } 
+    }
 
-        foreach ($export as $file) {
-            $filePath = ExportManager::path_join($dir, $file->realName);
-            $dirname = dirname($filePath);
-            @mkdir($dirname, 0777, true);
-            file_put_contents($filePath, base64_decode($file->fileContent));
+    public static function getS3Client($credentials, $region) 
+    {
+        // Create Amazon Web Service client
+        return new S3Client([
+            'version'     => 'latest',
+            'region'      => $region,
+            'credentials' => $credentials,
+            'http' => [ 'verify' => false ]    
+        ]);
+    }
+
+    public static function ftpDirectoryExists($ftpConn, $ftpDirectory) 
+    {
+        
+        $list = ftp_nlist($ftpConn, ".");
+
+        foreach($list as $entry) {
+            if($entry != '.' && $entry != '..' && ExportManager::isDirectory($ftpConn, $entry)) {
+                if(strtolower($entry) == strtolower($ftpDirectory)){
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 
     public static function uploadToAmazonS3($bucketName, $accessId, $secretKey, $export)
@@ -104,19 +129,8 @@ class ExportManager
         }
     }
 
-    public static function getS3Client($credentials, $region) 
-    {
-        // Create Amazon Web Service client
-        return new S3Client([
-            'version'     => 'latest',
-            'region'      => $region,
-            'credentials' => $credentials,
-            'http' => [ 'verify' => false ]    
-        ]);
-    }
-
     public static function uploadToFTP($ftpHost, $ftpPort, $userName, $loginPassword, $remoteDirectory, $export) 
-    {       
+    {
         try {
 
             // Connect and login to FTP server
@@ -143,37 +157,5 @@ class ExportManager
         } catch (Error $ex) {
             echo('ERROR: ' . $e->getMessage());
         }
-    }
-
-    public static function ftpDirectoryExists($ftpConn, $ftpDirectory) {
-        
-        $list = ftp_nlist($ftpConn, ".");
-
-        foreach($list as $entry) {
-            if($entry != '.' && $entry != '..' && ExportManager::isDirectory($ftpConn, $entry)) {
-                if(strtolower($entry) == strtolower($ftpDirectory)){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public static function isDirectory($conn_id, $dir) 
-    { 
-        if(@ftp_chdir($conn_id,$dir)) { 
-            ftp_cdup($conn_id); 
-            return true; 
-        } else { 
-            return false; 
-        } 
-    }
-    
-    public static function getExportedFileNames($export) 
-    {
-        return array_map(function ($file) {
-            return $file->realName;
-        }, $export);
     }
 }
