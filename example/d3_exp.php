@@ -10,11 +10,15 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('templateFilePath', realpath('resources/template_d3.html'));
+$exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/template_d3.html'));
 $exportConfig->set('type', 'jpg');
-$exportConfig->set('asyncCapture', 'true');
+$exportConfig->set('asyncCapture', true);
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config
-$exportManager->export($exportConfig, '.', true);
+$files = $exportManager->export($exportConfig, '.', true);
+
+foreach ($files as $file) {
+    echo $file . "\n";
+}
