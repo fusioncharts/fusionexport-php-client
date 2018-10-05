@@ -10,9 +10,13 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('inputSVG', realpath('resources/vector.svg'));
+$exportConfig->set('inputSVG', realpath(__DIR__ . '/resources/vector.svg'));
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
 // Call the export() method with the export config
-$exportManager->export($exportConfig, '.', true);
+$files = $exportManager->export($exportConfig, '.', true);
+
+foreach ($files as $file) {
+    echo $file . "\n";
+}
