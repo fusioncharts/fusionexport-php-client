@@ -11,6 +11,7 @@ use FusionExport\ExportConfig;
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/multiple.json'));
 $exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/template.html'));
+$exportConfig->set('type', 'pdf');
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();
