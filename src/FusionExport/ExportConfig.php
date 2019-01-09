@@ -5,6 +5,7 @@ namespace FusionExport;
 use FusionExport\Converters\NumberConverter;
 use FusionExport\Converters\BooleanConverter;
 use PHPHtmlParser\Dom;
+use mikehaertl\tmp\File as TmpFile;
 
 class ResourcePathInfo
 {
@@ -315,11 +316,12 @@ class ExportConfig
 
     private function generateZip($fileBag)
     {
+        $tmpFile = new TmpFile('', '.zip');
+        $tmpFile->delete = false;
+        $fileName = $tmpFile->getFileName();
 
         $zipFile = new \ZipArchive();
-        $realPath = realpath(sys_get_temp_dir());
-        $fileName = $realPath. DIRECTORY_SEPARATOR ."fcexport.zip";
-        $zipFile->open($fileName, \ZipArchive::CREATE);
+        $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
             if(strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0){
                 $zipFile->addFile($files->externalPath, $files->internalPath);
