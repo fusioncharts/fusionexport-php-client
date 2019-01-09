@@ -6,7 +6,7 @@ use FusionExport\Converters\NumberConverter;
 use FusionExport\Converters\BooleanConverter;
 use PHPHtmlParser\Dom;
 
-class ResourcePathInfo 
+class ResourcePathInfo
 {
     public $internalPath;
     public $externalPath;
@@ -15,7 +15,7 @@ class ResourcePathInfo
 class ExportConfig
 {
     protected $configs;
-    
+
     public function __construct()
     {
         $this->typingsFile = __DIR__ . '/../config/fusionexport-typings.json';
@@ -85,7 +85,7 @@ class ExportConfig
     }
 
     public function getFormattedConfigs()
-    {    
+    {
         $this->formatConfigs();
         return $this->formattedConfigs;
     }
@@ -116,15 +116,15 @@ class ExportConfig
 
         $this->configs[$name] = $value;
     }
-    
-    private function endswith($string, $test) 
+
+    private function endswith($string, $test)
     {
         $strlen = strlen($string);
         $testlen = strlen($test);
         if ($testlen > $strlen) return false;
         return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
     }
-    
+
     private function formatConfigs()
     {
         $zipBag = array();
@@ -165,7 +165,7 @@ class ExportConfig
                     $this->formattedConfigs['dashboardLogo'] = $internalFilePath;
                     array_push($zipBag,$obj);
                     break;
-                case "templateFilePath":                    
+                case "templateFilePath":
                     $templatePathWithinZip = '';
                     $zipPaths = array();
                     $this->createTemplateZipPaths($zipPaths,$templatePathWithinZip);
@@ -188,7 +188,7 @@ class ExportConfig
                         }
                     }
                     break;
-                default: 
+                default:
                     $this->formattedConfigs[$key] = $this->configs[$key];
             }
         }
@@ -197,24 +197,25 @@ class ExportConfig
             $this->formattedConfigs['payload'] = $zipFile;
         }
         $this->formattedConfigs['clientName'] = 'PHP';
-        
+
         $this->formattedConfigs['platform'] = PHP_OS;
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $this->formattedConfigs['platform'] = 'win32';
-        } 
+        }
     }
-    
+
     private function findResources()
     {
         $dom = new Dom();
-        $dom->setOptions([ 
+        $dom->setOptions([
             'removeScripts' => false,
         ]);
-        $dom->load(file_get_contents($this->configs['templateFilePath']));
 
-        $links = $dom->find('link')->toArray();
-        $scripts = $dom->find('script')->toArray();
-        $imgs = $dom->find('img')->toArray();
+        @$dom->load(file_get_contents($this->configs['templateFilePath']));
+
+        $links = @$dom->find('link')->toArray();
+        $scripts = @$dom->find('script')->toArray();
+        $imgs = @$dom->find('img')->toArray();
 
         $links = array_map(function ($link) {
             return $link->getAttribute('href');
@@ -230,20 +231,20 @@ class ExportConfig
 
         $this->collectedResources = array_merge($links, $scripts, $imgs);
         $this->collectedResources = Helpers::resolvePaths(
-            $this->collectedResources, 
+            $this->collectedResources,
             dirname(realpath($this->configs['templateFilePath']))
         );
 
         $this->collectedResources = array_unique($this->collectedResources);
-        
+
         $this->removeRemoteResources();
         return $this->collectedResources;
     }
-    
-    private function removeRemoteResources() 
+
+    private function removeRemoteResources()
     {
         $this->collectedResources = array_filter(
-            $this->collectedResources, 
+            $this->collectedResources,
             function ($res) {
                 if (Helpers::startsWith($res, 'http://')) return false;
 
@@ -276,7 +277,7 @@ class ExportConfig
             if(strlen($baseDirectoryPath) == 0){
                 $baseDirectoryPath = dirname($templateFilePath);
             }
-            
+
         }
         $mapExtractedPathAbsToRel = array();
         foreach($listExtractedPaths as $tmpPath){
@@ -293,7 +294,7 @@ class ExportConfig
         $outZipPaths = $zipPaths;
         $outTemplatePathWithinZip = $templatePathWithinZip;
     }
-    
+
     private function generatePathForZip($listAllFilePaths, $baseDirectoryPath)
     {
         $listFilePath = array();
@@ -305,16 +306,16 @@ class ExportConfig
         }
         return $listFilePath;
     }
-    
+
     private function getRelativePath($from, $to)
     {
         $internalPath = ltrim(trim(str_replace($to,'',$from),DIRECTORY_SEPARATOR));
         return trim($internalPath);
     }
-    
+
     private function generateZip($fileBag)
     {
-        
+
         $zipFile = new \ZipArchive();
         $realPath = realpath(sys_get_temp_dir());
         $fileName = $realPath. DIRECTORY_SEPARATOR ."fcexport.zip";
@@ -323,12 +324,12 @@ class ExportConfig
             if(strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0){
                 $zipFile->addFile($files->externalPath, $files->internalPath);
             }
-            
+
         }
         $zipFile->close();
         return $fileName;
     }
-    
+
     private function readTypingsConfig()
     {
         $this->typings = json_decode(file_get_contents($this->typingsFile));
