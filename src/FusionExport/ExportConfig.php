@@ -231,6 +231,9 @@ class ExportConfig
         }, $imgs);
 
         $this->collectedResources = array_merge($links, $scripts, $imgs);
+
+        $this->removeRemoteResources();
+
         $this->collectedResources = Helpers::resolvePaths(
             $this->collectedResources,
             dirname(realpath($this->configs['templateFilePath']))
@@ -238,7 +241,6 @@ class ExportConfig
 
         $this->collectedResources = array_unique($this->collectedResources);
 
-        $this->removeRemoteResources();
         return $this->collectedResources;
     }
 
@@ -278,16 +280,15 @@ class ExportConfig
             if(strlen($baseDirectoryPath) == 0){
                 $baseDirectoryPath = dirname($templateFilePath);
             }
-
         }
         $mapExtractedPathAbsToRel = array();
         foreach($listExtractedPaths as $tmpPath){
-            $mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
+            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
         }
         foreach($listResourcePaths as $tmpPath){
-            $mapExtractedPathAbsToRel[$tmpPath] = $this->getRelativePath($tmpPath,$baseDirectoryPath);
+            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
         }
-        $templateFilePathWithinZipRel = $this->getRelativePath($templateFilePath,$baseDirectoryPath);
+        $templateFilePathWithinZipRel = Helpers::removeCommonPath($templateFilePath, $baseDirectoryPath);
         $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
         $zipPaths = array();
         $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel,$baseDirectoryPath);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace FusionExport;
 
@@ -14,10 +14,11 @@ class Helpers
         return substr($string, strlen($query) * -1) === $query;
     }
 
-    public static function findCommonPath($paths) 
+    public static function findCommonPath($paths)
     {
         sort($paths, SORT_STRING);
         if (count($paths) === 0) return '';
+        if (count($paths) === 1) return dirname($paths[0]);
         $paths = array_map(function ($pa) {
             return explode(DIRECTORY_SEPARATOR, $pa);
         }, $paths);
@@ -28,8 +29,8 @@ class Helpers
         while ($i < $l && @$p1[$i] === @$p2[$i]) $i += 1;
         return implode(DIRECTORY_SEPARATOR, array_slice($p1, 0, $i));
     }
-      
-    public static function removeCommonPath($path, $base) 
+
+    public static function removeCommonPath($path, $base)
     {
         $pathSpl = explode(DIRECTORY_SEPARATOR, $path);
         $baseSpl = explode(DIRECTORY_SEPARATOR, $base);
@@ -56,7 +57,7 @@ class Helpers
 
         $cwd = getcwd();
         $basePath = realpath($base);
-        
+
         chdir($basePath);
 
         $resolvedPaths = array_map(function ($p) {
@@ -91,7 +92,7 @@ class Helpers
 		}
 		$outListResourcePaths = array_diff(listResourceIncludePaths,listResourceExcludePaths);
 		$outBaseDirectoryPath = $resources.basePath;
-		
+
     }
 
     public static function convertFilePathToBase64($val)
