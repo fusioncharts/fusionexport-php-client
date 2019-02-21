@@ -2,6 +2,8 @@
 
 namespace FusionExport;
 
+use FusionExport\Exceptions\ConnectionRefusedException;
+
 class Exporter
 {
     private $exportDoneListener;
@@ -19,7 +21,6 @@ class Exporter
     public function __construct(ExportConfig $exportConfig)
     {
         $this->exportConfig = $exportConfig;
-        
     }
 
     public function setExportConnectionConfig($exportServerHost, $exportServerPort)
@@ -31,14 +32,18 @@ class Exporter
     public function start($outputDir, $unzip)
     {
         $this->client = new \GuzzleHttp\Client();
-        
-        $configData = $this->getFormattedExportConfigs();
+
+        $configData = $this->exportConfig->getFormattedConfigs();
         $url = $this->exportServerHost . ':' . $this->exportServerPort . "/api/v2.0/export";
         $multipartArray = $this->createMultipartData($configData);
-        
-        $response = $this->client->request('POST', $url, [
-            'multipart' => $multipartArray
-        ]);
+
+        try {
+            $response = $this->client->request('POST', $url, [
+                'multipart' => $multipartArray
+            ]);
+        } catch (\GuzzleHttp\Exception\ConnectException $err) {
+            throw new ConnectionRefusedException($this->exportServerHost, $this->exportServerPort);
+        }
 
         if (isset($configData['payload'])) {
             unlink($configData['payload']);
@@ -46,25 +51,27 @@ class Exporter
 
         return $this->saveResponse($response->getBody()->getContents(), $outputDir, $unzip);
     }
-    
+
     private function createMultipartData($configData)
     {
         $multipart = array();
-        if(count($configData)>0){
-            foreach($configData as $key => $value){
+
+        if (count($configData) > 0) {
+            foreach ($configData as $key => $value) {
                 $arr = array();
                 $arr['name'] = $key;
-                if(strcasecmp($key,'payload') == 0){
-                    $arr['contents'] = fopen($value,'r');
-                }else{
+                if (strcasecmp($key, 'payload') == 0) {
+                    $arr['contents'] = fopen($value, 'r');
+                } else {
                     $arr['contents'] = $value;
                 }
-                array_push($multipart,$arr);
+                array_push($multipart, $arr);
             }
         }
+
         return $multipart;
     }
-    
+
     private function saveResponse($contents, $outputDir, $unzip)
     {
         $exportedFiles = [];
@@ -73,7 +80,9 @@ class Exporter
         file_put_contents($fileName, $contents);
         $exportedFiles[] = realpath($fileName);
 
-        if (!$unzip) return $exportedFiles;
+        if (!$unzip) {
+            return $exportedFiles;
+        }
 
         $zipFile = new \ZipArchive();
         $exportedFiles = [];
@@ -81,14 +90,14 @@ class Exporter
         if (!$zipFile->open($fileName)) {
             throw new \Exception('Failed to open exported archive file');
         }
-        
+
         $zipFile->extractTo($outputDir);
 
         for ($i = 0; $i < $zipFile->numFiles; $i++) {
             $path = realpath($outputDir . DIRECTORY_SEPARATOR . $zipFile->getNameIndex($i));
             $exportedFiles[] = $path;
         }
-        
+
         $zipFile->close();
         unlink($fileName);
 
@@ -102,19 +111,5 @@ class Exporter
         if (array_key_exists('error', $exportResult)) {
             return $exportResult->error;
         }
-    }
-
-    private function getFormattedExportConfigs()
-    {
-        return $this->exportConfig->getFormattedConfigs();
-    }
-
-    private function startsWith($haystack, $needle)
-    {
-        if (strpos($haystack, $needle) === 0) {
-            return true;
-        }
-
-        return false;
     }
 }
