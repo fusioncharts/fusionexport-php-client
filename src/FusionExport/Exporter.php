@@ -3,6 +3,7 @@
 namespace FusionExport;
 
 use FusionExport\Exceptions\ConnectionRefusedException;
+use FusionExport\Exceptions\ServerException;
 
 class Exporter
 {
@@ -43,6 +44,23 @@ class Exporter
             ]);
         } catch (\GuzzleHttp\Exception\ConnectException $err) {
             throw new ConnectionRefusedException($this->exportServerHost, $this->exportServerPort);
+        } catch (\GuzzleHttp\Exception\ServerException $err) {
+            $response = $err->getResponse();
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 500) {
+                $errMsg = $response->getBody()->getContents();
+
+                try {
+                    $errMsg = json_decode($errMsg)->error;
+                } catch (\Exception $err) {
+                    // continue regardless of error
+                }
+
+                throw new ServerException($errMsg);
+            }
+
+            throw $err;
         }
 
         if (isset($configData['payload'])) {
