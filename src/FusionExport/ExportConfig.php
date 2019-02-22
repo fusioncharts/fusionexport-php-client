@@ -118,23 +118,13 @@ class ExportConfig
         $this->configs[$name] = $value;
     }
 
-    private function endswith($string, $test)
-    {
-        $strlen = strlen($string);
-        $testlen = strlen($test);
-        if ($testlen > $strlen) {
-            return false;
-        }
-        return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
-    }
-
     private function formatConfigs()
     {
         $zipBag = array();
         foreach ($this->configs as $key=> $value) {
             switch ($key) {
                 case "chartConfig":
-                    if ($this->endswith($this->configs['chartConfig'], '.json')) {
+                    if (Helpers::endswith($this->configs['chartConfig'], '.json')) {
                         $this->formattedConfigs['chartConfig'] = file_get_contents($this->configs['chartConfig']);
                     } else {
                         $this->formattedConfigs['chartConfig'] = $this->configs['chartConfig'];
@@ -201,6 +191,43 @@ class ExportConfig
         }
     }
 
+    private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
+    {
+        $templatePathWithinZip ='';
+        $listExtractedPaths = array();
+        $listExtractedPaths = $this->findResources();
+        $listResourcePaths = array();
+        $baseDirectoryPath = null;
+        if (isset($this->configs['resourceFilePath'])) {
+            Helpers::globResolve($listResourcePaths, $baseDirectoryPath, $this->configs[resourceFilePath]);
+        }
+        $templateFilePath = realpath($this->configs['templateFilePath']);
+        if (!isset($baseDirectoryPath)) {
+            array_push($listExtractedPaths, $templateFilePath);
+            $commonDirectoryPath = Helpers::findCommonPath($listExtractedPaths);
+            if (isset($commonDirectoryPath)) {
+                $baseDirectoryPath = $commonDirectoryPath;
+            }
+            if (strlen($baseDirectoryPath) == 0) {
+                $baseDirectoryPath = dirname($templateFilePath);
+            }
+        }
+        $mapExtractedPathAbsToRel = array();
+        foreach ($listExtractedPaths as $tmpPath) {
+            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
+        }
+        foreach ($listResourcePaths as $tmpPath) {
+            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
+        }
+        $templateFilePathWithinZipRel = Helpers::removeCommonPath($templateFilePath, $baseDirectoryPath);
+        $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
+        $zipPaths = array();
+        $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel, $baseDirectoryPath);
+        $templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
+        $outZipPaths = $zipPaths;
+        $outTemplatePathWithinZip = $templatePathWithinZip;
+    }
+
     private function findResources()
     {
         $dom = new Dom();
@@ -262,43 +289,6 @@ class ExportConfig
         );
     }
 
-    private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
-    {
-        $templatePathWithinZip ='';
-        $listExtractedPaths = array();
-        $listExtractedPaths = $this->findResources();
-        $listResourcePaths = array();
-        $baseDirectoryPath = null;
-        if (isset($this->configs['resourceFilePath'])) {
-            Helpers::globResolve($listResourcePaths, $baseDirectoryPath, $this->configs[resourceFilePath]);
-        }
-        $templateFilePath = realpath($this->configs['templateFilePath']);
-        if (!isset($baseDirectoryPath)) {
-            array_push($listExtractedPaths, $templateFilePath);
-            $commonDirectoryPath = Helpers::findCommonPath($listExtractedPaths);
-            if (isset($commonDirectoryPath)) {
-                $baseDirectoryPath = $commonDirectoryPath;
-            }
-            if (strlen($baseDirectoryPath) == 0) {
-                $baseDirectoryPath = dirname($templateFilePath);
-            }
-        }
-        $mapExtractedPathAbsToRel = array();
-        foreach ($listExtractedPaths as $tmpPath) {
-            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
-        }
-        foreach ($listResourcePaths as $tmpPath) {
-            $mapExtractedPathAbsToRel[$tmpPath] = Helpers::removeCommonPath($tmpPath, $baseDirectoryPath);
-        }
-        $templateFilePathWithinZipRel = Helpers::removeCommonPath($templateFilePath, $baseDirectoryPath);
-        $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
-        $zipPaths = array();
-        $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel, $baseDirectoryPath);
-        $templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
-        $outZipPaths = $zipPaths;
-        $outTemplatePathWithinZip = $templatePathWithinZip;
-    }
-
     private function generatePathForZip($listAllFilePaths, $baseDirectoryPath)
     {
         $listFilePath = array();
@@ -309,12 +299,6 @@ class ExportConfig
             array_push($listFilePath, $obj);
         }
         return $listFilePath;
-    }
-
-    private function getRelativePath($from, $to)
-    {
-        $internalPath = ltrim(trim(str_replace($to, '', $from), DIRECTORY_SEPARATOR));
-        return trim($internalPath);
     }
 
     private function generateZip($fileBag)
