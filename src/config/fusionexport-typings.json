@@ -1,46 +1,92 @@
 {
     "chartConfig": {
-        "type": "string"
+        "supportedTypes": ["string", "array", "object"],
+        "converter": "ChartConfigConverter"
     },
     "inputSVG": {
-        "type": "string"
+        "supportedTypes": ["string"]
+    },
+    "template": {
+        "supportedTypes": ["string"]
     },
     "templateFilePath": {
-        "type": "string"
+        "supportedTypes": ["string"]
+    },
+    "templateWidth": {
+        "supportedTypes": ["string", "integer"],
+        "converter": "NumberConverter"
+    },
+    "templateHeight": {
+        "supportedTypes": ["string", "integer"],
+        "converter": "NumberConverter"
+    },
+    "templateFormat": {
+        "supportedTypes": ["string"],
+        "converter": "EnumConverter",
+        "dataset": [
+            "Letter",
+            "Legal",
+            "Tabloid",
+            "Ledger",
+            "A0",
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5"
+        ]
     },
     "callbackFilePath": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "asyncCapture": {
-        "type": "boolean",
+        "supportedTypes": ["string", "integer", "boolean"],
         "converter": "BooleanConverter"
     },
     "maxWaitForCaptureExit": {
-        "type": "integer",
+        "supportedTypes": ["string", "integer"],
         "converter": "NumberConverter"
     },
     "dashboardLogo": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "dashboardHeading": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "dashboardSubheading": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "outputFile": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "type": {
-        "type": "string"
+        "supportedTypes": ["string"],
+        "converter": "EnumConverter",
+        "dataset": [
+            "jpeg",
+            "jpg",
+            "png",
+            "pdf",
+            "svg",
+            "html",
+            "csv",
+            "xls",
+            "xlsx"
+        ]
     },
     "quality": {
-        "type": "string"
+        "supportedTypes": ["string"],
+        "converter": "EnumConverter",
+        "dataset": [
+            "good",
+            "better",
+            "best"
+        ]
     },
     "outputFileDefinition": {
-        "type": "string"
+        "supportedTypes": ["string"]
     },
     "resourceFilePath": {
-        "type": "string"
+        "supportedTypes": ["string"]
     }
 }

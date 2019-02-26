@@ -2,6 +2,8 @@
 
 namespace FusionExport;
 
+use FusionExport\Exceptions\FileNotFoundException;
+
 class Helpers
 {
     public static function startsWith($string, $query)
@@ -113,5 +115,29 @@ class Helpers
     public static function convertFilePathToBase64($val)
     {
         return base64_encode(file_get_contents($val));
+    }
+
+    public static function humanizeArray($arr)
+    {
+        if (!is_array($arr)) {
+            return '';
+        }
+
+        if (count($arr) === 1) {
+            return $arr[0];
+        }
+
+        $str = implode(', ', array_slice($arr, 0, -1));
+        $str .= ' and ' . array_slice($arr, -1)[0];
+        return $str;
+    }
+
+    public static function readFile($path)
+    {
+        if (!file_exists($path)) {
+            throw new FileNotFoundException($path);
+        }
+
+        return file_get_contents($path);
     }
 }
