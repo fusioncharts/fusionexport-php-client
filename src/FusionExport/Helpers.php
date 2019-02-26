@@ -76,12 +76,21 @@ class Helpers
 
         chdir($basePath);
 
-        $resolvedPaths = array_map(function ($p) {
+        $resolvedPaths = array_reduce($paths, function ($rps, $p) {
             if (!isset($p)) {
-                return false;
+                return $rps;
             }
-            return realpath($p);
-        }, $paths);
+
+            $rp = realpath($p);
+
+            if (!$rp) {
+                print('File not found: ' . $p . ". Ignoring file.\n");
+                return $rps;
+            }
+
+            $rps[] = $rp;
+            return $rps;
+        }, array());
 
         chdir($cwd);
 
