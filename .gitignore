@@ -42,3 +42,5 @@ php-export-*.*
 export--*.*
 fusioncharts_export.*
 example/test.php
+
+test_*.*
