@@ -39,7 +39,7 @@ Temporary Items
 
 .idea
 php-export-*.*
-export--*.*
+export*.*
 fusioncharts_export.*
 example/test.php
 
