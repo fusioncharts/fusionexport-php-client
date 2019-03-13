@@ -1,12 +1,12 @@
 # FusionExport PHP Client
 
-This is a PHP export client for FusionExport. It communicates with FusionExport through the socket protocol and does the export.
+PHP SDK for FusionExport. Enables exporting from PHP using FusionExport.
 
 ## Installation
 
 To install this package, simply use composer:
 
-```
+```bash
 composer require fusioncharts/fusionexport
 ```
 
@@ -21,27 +21,61 @@ use FusionExport\ExportConfig;
 
 ## Getting Started
 
-Let’s start with a simple chart export. For exporting a single chart, save the chartConfig in a JSON file. The config should be inside an array.
+Start with a simple chart export. For exporting a single chart just pass the chart configuration as you would have passed it to the FusionCharts constructor.
 
 ```php
 <?php
 
-// Exporting a chart
-
 require __DIR__ . '/../vendor/autoload.php';
 
-// Use the sdk
+// Use the FusionExport components
 use FusionExport\ExportManager;
 use FusionExport\ExportConfig;
 
-// Instantiate the ExportConfig class and add the required configurations
-$exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', realpath('resources/single.json'));
-
-// Instantiate the ExportManager class
+// Instantiate ExportManager
 $exportManager = new ExportManager();
-// Call the export() method with the export config
-$exportManager->export($exportConfig, '.', true);
+
+// Instantiate ExportConfig
+$exportConfig = new ExportConfig();
+
+$config = (object)[
+    "type" => "column2d",
+    "renderAt" => "chart-container",
+    "width" => "550",
+    "height" => "350",
+    "id" => "myChartId",
+    "dataFormat" => "json",
+    "dataSource" => (object)[
+        "chart" => (object)[
+            "caption" => "Number of visitors last week",
+            "theme" => "ocean",
+            "subCaption" => "Bakersfield Central vs Los Angeles Topanga"
+        ],
+        "data" => [
+            (object)[
+                "label" => "Mon",
+                "value" => "15123"
+            ],
+            (object)[
+                "label" => "Tue",
+                "value" => "14233"
+            ],
+            (object)[
+                "label" => "Wed",
+                "value" => "25507"
+            ]
+        ]
+    ]
+];
+
+$exportConfig->set('chartConfig', $config);
+
+// Export the chart by providing the exportConfig to the exportManager
+$files = $exportManager->export($exportConfig, '.', true);
+
+foreach ($files as $file) {
+    echo $file . "\n";
+}
 ```
 
 ## API Reference
