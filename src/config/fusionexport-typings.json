@@ -83,6 +83,24 @@
             "best"
         ]
     },
+    "headerEnabled": {
+        "supportedTypes": ["string"]
+    },
+    "footerEnabled": {
+        "supportedTypes": ["string"]
+    },
+    "pageMargin": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
+    "headerComponents": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
+    "footerComponents": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
     "outputFileDefinition": {
         "supportedTypes": ["string"]
     },
