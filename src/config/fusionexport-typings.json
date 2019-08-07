@@ -84,10 +84,12 @@
         ]
     },
     "headerEnabled": {
-        "supportedTypes": ["string"]
+        "supportedTypes": ["string", "integer", "boolean"],
+        "converter": "BooleanConverter"
     },
     "footerEnabled": {
-        "supportedTypes": ["string"]
+        "supportedTypes": ["string", "integer", "boolean"],
+        "converter": "BooleanConverter"
     },
     "pageMargin": {
         "supportedTypes": ["string", "object"],

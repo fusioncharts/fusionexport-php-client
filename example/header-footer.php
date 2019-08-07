@@ -12,7 +12,7 @@ $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/multiple.json'));
 $exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/template.html'));
 $exportConfig->set('type', 'pdf');
-$exportConfig->set('headerEnabled', 'true');
+$exportConfig->set('headerEnabled', true);
 $exportConfig->set('headerComponents', (object)[
     "title" => (object)[
         "style" => "color:blue;"
