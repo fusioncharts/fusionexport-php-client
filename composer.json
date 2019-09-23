@@ -1,7 +1,7 @@
 {
     "name": "fusioncharts/fusionexport",
     "description": "PHP Client for FusionExport",
-    "version": "1.1.0",
+    "version": "1.2.2",
     "type": "library",
     "keywords": [
         "export",
@@ -23,6 +23,7 @@
         "php": "^5.6 || ^7.0",
         "paquettg/php-html-parser": "^1.7",
         "guzzlehttp/guzzle": "^6.3",
-        "mikehaertl/php-tmpfile": "^1.1"
+        "mikehaertl/php-tmpfile": "^1.1",
+        "phpmailer/phpmailer": "^6.0"
     }
 }
