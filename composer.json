@@ -1,29 +1,29 @@
 {
-    "name": "fusioncharts/fusionexport",
-    "description": "PHP Client for FusionExport",
-    "version": "1.2.2",
-    "type": "library",
-    "keywords": [
-        "export",
-        "fusioncharts",
-        "fusionexport",
-        "client"
-    ],
-    "homepage": "https://www.fusioncharts.com/fusionexport",
-    "license": "MIT",
-    "support": {
-        "email": "support@fusioncharts.com"
-    },
-    "autoload": {
-        "psr-4": {
-            "FusionExport\\": "src/FusionExport"
-        }
-    },
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "paquettg/php-html-parser": "^1.7",
-        "guzzlehttp/guzzle": "^6.3",
-        "mikehaertl/php-tmpfile": "^1.1",
-        "phpmailer/phpmailer": "^6.0"
+  "name": "fusioncharts/fusionexport",
+  "description": "PHP Client for FusionExport",
+  "version": "1.2.3",
+  "type": "library",
+  "keywords": [
+    "export",
+    "fusioncharts",
+    "fusionexport",
+    "client"
+  ],
+  "homepage": "https://www.fusioncharts.com/fusionexport",
+  "license": "MIT",
+  "support": {
+    "email": "support@fusioncharts.com"
+  },
+  "autoload": {
+    "psr-4": {
+      "FusionExport\\": "src/FusionExport"
     }
+  },
+  "require": {
+    "php": "^5.6 || ^7.0",
+    "paquettg/php-html-parser": "^1.7",
+    "guzzlehttp/guzzle": "^6.3",
+    "mikehaertl/php-tmpfile": "^1.1",
+    "phpmailer/phpmailer": "^6.0"
+  }
 }
