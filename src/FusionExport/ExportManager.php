@@ -20,14 +20,66 @@ class ExportManager
         $this->port = $port;
     }
 
-    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = false)
-    {
-        $exporter = new Exporter($exportConfig);
+    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = false) {
+			$exporter = new Exporter($exportConfig);
+			$exporter->setExportConnectionConfig($this->host, $this->port);
+			$contents = $exporter->sendToServer();
 
-        $exporter->setExportConnectionConfig($this->host, $this->port);
+			$exportedFiles = [];
+			$fileName = $outputDir . DIRECTORY_SEPARATOR . 'fusioncharts_export.zip';
+			file_put_contents($fileName, $contents);
+			$exportedFiles[] = realpath($fileName);
 
-        return $exporter->start($outputDir, $unzip);
-    }
+			if (!$unzip) {
+				return $exportedFiles;
+			}
+
+			$zipFile = new \ZipArchive();
+			$exportedFiles = [];
+
+			if (!$zipFile->open($fileName)) {
+				throw new \Exception('Failed to open exported archive file');
+			}
+
+			$zipFile->extractTo($outputDir);
+
+			for ($i = 0; $i < $zipFile->numFiles; $i++) {
+				$path = realpath($outputDir . DIRECTORY_SEPARATOR . $zipFile->getNameIndex($i));
+				$exportedFiles[] = $path;
+			}
+
+			$zipFile->close();
+			unlink($fileName);
+
+			return $exportedFiles;
+		}
+
+		public function exportAsStream(ExportConfig $exportConfig) {
+			$exporter = new Exporter($exportConfig);
+			$exporter->setExportConnectionConfig($this->host, $this->port);
+			$contents = $exporter->sendToServer();
+
+			/* creating a temporary file */
+			$tempDir = tempnam('tmp', 'fusioncharts');
+			$fileName = $tempDir . '_export.zip';
+
+			file_put_contents($fileName, $contents);
+			$zipFile = new \ZipArchive();
+
+			if (!$zipFile->open($fileName)) {
+				throw new \Exception('Failed to open exported archive file');
+			}
+
+			$exportedFiles = [];
+			for ($i = 0; $i < $zipFile->numFiles; $i++) {
+				$exportedFiles[$zipFile->getNameIndex($i)] = $zipFile->getFromIndex($i);
+			}
+
+			$zipFile->close();
+			unlink($fileName);
+
+			return $exportedFiles;
+		}
 
     public static function path_join(...$paths)
     {
