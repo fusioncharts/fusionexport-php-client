@@ -6,6 +6,7 @@ use FusionExport\Converters\NumberConverter;
 use FusionExport\Converters\BooleanConverter;
 use FusionExport\Converters\EnumConverter;
 use FusionExport\Converters\ChartConfigConverter;
+use FusionExport\Converters\ObjectConverter;
 use FusionExport\Exceptions\InvalidConfigurationException;
 use FusionExport\Exceptions\InvalidDataTypeException;
 use PHPHtmlParser\Dom;
@@ -122,6 +123,8 @@ class ExportConfig
                 $parsedValue = ChartConfigConverter::convert($value);
             } elseif ($converter === 'BooleanConverter') {
                 $parsedValue = BooleanConverter::convert($value);
+            } elseif ($converter === 'ObjectConverter') {
+                $parsedValue = ObjectConverter::convert($value);
             } elseif ($converter === 'NumberConverter') {
                 $parsedValue = NumberConverter::convert($value);
             } elseif ($converter === 'EnumConverter') {

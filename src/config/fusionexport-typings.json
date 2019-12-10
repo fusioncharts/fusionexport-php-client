@@ -83,6 +83,26 @@
             "best"
         ]
     },
+    "headerEnabled": {
+        "supportedTypes": ["string", "integer", "boolean"],
+        "converter": "BooleanConverter"
+    },
+    "footerEnabled": {
+        "supportedTypes": ["string", "integer", "boolean"],
+        "converter": "BooleanConverter"
+    },
+    "pageMargin": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
+    "headerComponents": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
+    "footerComponents": {
+        "supportedTypes": ["string", "object"],
+        "converter": "ObjectConverter"
+    },
     "outputFileDefinition": {
         "supportedTypes": ["string"]
     },
