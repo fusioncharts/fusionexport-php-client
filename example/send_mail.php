@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Exporting a dashboard with header & footer options
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . './vendor/autoload.php';
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
@@ -26,15 +26,15 @@ $mail = new PHPMailer(true);
 try {
     $mail->SMTPDebug = 0;                                       
     $mail->isSMTP();                                            
-    $mail->Host       = 'smtp.mailtrap.io';  
+    $mail->Host       = '<HOST>';  
     $mail->SMTPAuth   = true;                                   
-    $mail->Username   = '9217733c3a014f';                     
-    $mail->Password   = '39564c5d1ddd00';                               
+    $mail->Username   = '<USERNAME>';                     
+    $mail->Password   = '<PASSWORD>';                               
     $mail->SMTPSecure = 'tls';                                  
     $mail->Port       = 587;                                    
 
-    $mail->setFrom('from@example.com', 'Mailer');
-    $mail->addAddress('shreyas.a24@gmail.com');     
+    $mail->setFrom("<SENDER'S EMAIL>", 'Mailer');
+    $mail->addAddress("<RECEIVERS'S EMAIL>");
 
     foreach ($files as $index=>$file) {     
         $mail->addAttachment($file, "export$index.pdf"); 
