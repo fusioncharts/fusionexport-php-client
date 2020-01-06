@@ -19,7 +19,7 @@ $exportConfig->set('headerEnabled', true);
 $exportManager = new ExportManager();
 // Call the export() method with the export config
 $files = $exportManager->export($exportConfig, '.', true);
-echo 'FusionExport PHP Client - Files generated, sending mail';
+echo 'FusionExport PHP Client - Files generated, sending mail', PHP_EOL;
 
 $mail = new PHPMailer(true);
 
@@ -36,16 +36,16 @@ try {
     $mail->setFrom("<SENDER'S EMAIL>", 'Mailer');
     $mail->addAddress("<RECEIVERS'S EMAIL>");
 
-    foreach ($files as $index=>$file) {     
-        $mail->addAttachment($file, "export$index.pdf"); 
+    foreach ($files as $index=>$file) {
+        $mail->addAttachment($file, "export$index.pdf");
     }
 
-    $mail->isHTML(true);                                  
+    $mail->isHTML(true);
     $mail->Subject = 'FusionExport';
     $mail->Body    = 'Hello,<br><br>Kindly find the attachment of FusionExport exported files.<br><br>Thank you!';
 
     $mail->send();
-    echo 'FusionExport PHP Client: mail sent.';
+    echo 'FusionExport PHP Client: mail sent.', PHP_EOL;
 } catch (Exception $e) {
-    echo "FusionExport PHP Client - error sending mail: {$mail->ErrorInfo}";
+    echo "FusionExport PHP Client - error sending mail: {$mail->ErrorInfo}", PHP_EOL;
 }
