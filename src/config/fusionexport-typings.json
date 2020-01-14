@@ -83,6 +83,14 @@
             "best"
         ]
     },
+    "orientation": {
+        "supportedTypes": ["string"],
+        "converter": "EnumConverter",
+        "dataset": [
+            "portrait",
+            "landscape"
+        ]
+    },
     "headerEnabled": {
         "supportedTypes": ["string", "integer", "boolean"],
         "converter": "BooleanConverter"
@@ -91,17 +99,14 @@
         "supportedTypes": ["string", "integer", "boolean"],
         "converter": "BooleanConverter"
     },
-    "pageMargin": {
-        "supportedTypes": ["string", "object"],
-        "converter": "ObjectConverter"
-    },
     "headerComponents": {
-        "supportedTypes": ["string", "object"],
-        "converter": "ObjectConverter"
+        "supportedTypes": ["string"]
     },
     "footerComponents": {
-        "supportedTypes": ["string", "object"],
-        "converter": "ObjectConverter"
+        "supportedTypes": ["string"]
+    },
+    "pageMargin": {
+        "supportedTypes": ["string"]
     },
     "outputFileDefinition": {
         "supportedTypes": ["string"]
