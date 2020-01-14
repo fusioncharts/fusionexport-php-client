@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Exporting a dashboard with header & footer options
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . './vendor/autoload.php';
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
@@ -19,33 +19,33 @@ $exportConfig->set('headerEnabled', true);
 $exportManager = new ExportManager();
 // Call the export() method with the export config
 $files = $exportManager->export($exportConfig, '.', true);
-echo 'FusionExport PHP Client - Files generated, sending mail';
+echo 'FusionExport PHP Client - Files generated, sending mail', PHP_EOL;
 
 $mail = new PHPMailer(true);
 
 try {
     $mail->SMTPDebug = 0;                                       
     $mail->isSMTP();                                            
-    $mail->Host       = 'smtp.mailtrap.io';  
+    $mail->Host       = '<HOST>';  
     $mail->SMTPAuth   = true;                                   
-    $mail->Username   = '9217733c3a014f';                     
-    $mail->Password   = '39564c5d1ddd00';                               
+    $mail->Username   = '<USERNAME>';                     
+    $mail->Password   = '<PASSWORD>';                               
     $mail->SMTPSecure = 'tls';                                  
     $mail->Port       = 587;                                    
 
-    $mail->setFrom('from@example.com', 'Mailer');
-    $mail->addAddress('shreyas.a24@gmail.com');     
+    $mail->setFrom("<SENDER'S EMAIL>", 'Mailer');
+    $mail->addAddress("<RECEIVERS'S EMAIL>");
 
-    foreach ($files as $index=>$file) {     
-        $mail->addAttachment($file, "export$index.pdf"); 
+    foreach ($files as $index=>$file) {
+        $mail->addAttachment($file, "export$index.pdf");
     }
 
-    $mail->isHTML(true);                                  
+    $mail->isHTML(true);
     $mail->Subject = 'FusionExport';
     $mail->Body    = 'Hello,<br><br>Kindly find the attachment of FusionExport exported files.<br><br>Thank you!';
 
     $mail->send();
-    echo 'FusionExport PHP Client: mail sent.';
+    echo 'FusionExport PHP Client: mail sent.', PHP_EOL;
 } catch (Exception $e) {
-    echo "FusionExport PHP Client - error sending mail: {$mail->ErrorInfo}";
+    echo "FusionExport PHP Client - error sending mail: {$mail->ErrorInfo}", PHP_EOL;
 }
