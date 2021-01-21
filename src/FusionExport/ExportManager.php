@@ -12,17 +12,21 @@ class ExportManager
 
     private $port;
 
+    private $isSecure;
+
     public function __construct(
         $host = Constants::DEFAULT_HOST,
-        $port = Constants::DEFAULT_PORT
+        $port = Constants::DEFAULT_PORT,
+        $isSecure = Constants::DEFAULT_IS_SECURE
     ) {
         $this->host = $host;
         $this->port = $port;
+        $this->isSecure = boolval($isSecure);
     }
 
     public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = false) {
 			$exporter = new Exporter($exportConfig);
-			$exporter->setExportConnectionConfig($this->host, $this->port);
+			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 
 			$exportedFiles = [];
@@ -56,7 +60,7 @@ class ExportManager
 
 		public function exportAsStream(ExportConfig $exportConfig) {
 			$exporter = new Exporter($exportConfig);
-			$exporter->setExportConnectionConfig($this->host, $this->port);
+			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 
 			/* creating a temporary file */

@@ -17,6 +17,8 @@ class Exporter
 
     private $exportServerPort;
 
+    private $exportServerSecure;
+
     private $client;
 
     public function __construct(ExportConfig $exportConfig)
@@ -24,21 +26,23 @@ class Exporter
         $this->exportConfig = $exportConfig;
     }
 
-    public function setExportConnectionConfig($exportServerHost, $exportServerPort)
+    public function setExportConnectionConfig($exportServerHost, $exportServerPort, $isSecure)
     {
         $this->exportServerHost = $exportServerHost;
         $this->exportServerPort = $exportServerPort;
+        $this->exportServerSecure = boolval($isSecure);
     }
 
 		public function sendToServer() {
-			$this->client = new \GuzzleHttp\Client();
+			$this->client = new \GuzzleHttp\Client(['verify' => FALSE]);
 
 			$configData = $this->exportConfig->getFormattedConfigs();
-			$url = $this->exportServerHost . ':' . $this->exportServerPort . "/api/v2.0/export";
+            $url = $this->exportServerHost . ':' . $this->exportServerPort;
+            $apiUrl = $this->getApiUrl($url);
 			$multipartArray = $this->createMultipartData($configData);
 
 			try {
-				$response = $this->client->request('POST', $url, [
+				$response = $this->client->request('POST', $apiUrl, [
 					'multipart' => $multipartArray
 				]);
 			} catch (\GuzzleHttp\Exception\ConnectException $err) {
@@ -87,6 +91,20 @@ class Exporter
         }
 
         return $multipart;
+    }
+
+    private function getApiUrl($url) {
+        $api = "/api/v2.0/export";
+        if(boolval($this->exportServerSecure) === TRUE) {
+            $authUrl = "https://" . $url;
+            try {
+                $this->client->request('GET', $authUrl);
+                return $authUrl . $api;
+            } catch (\GuzzleHttp\Exception\RequestException $err) {
+                echo "Warning: HTTPS server not found, overriding requests to an HTTP server";
+            }
+        }
+        return "http://". $url . $api;
     }
 
     private function checkExportError($exportResult)
