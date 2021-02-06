@@ -11,12 +11,10 @@ use FusionExport\ExportConfig;
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/multiple.json'));
 $exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/template.html'));
-$exportConfig->set('type', 'png');
-$host = '127.0.0.1';
-$port = 1337;
-$isSecure = TRUE;
+$exportConfig->set('type', 'pdf');
+
 // Instantiate the ExportManager class
-$exportManager = new ExportManager($host, $port, $isSecure);
+$exportManager = new ExportManager();
 // Call the export() method with the export config
 $files = $exportManager->export($exportConfig, '.', true);
 
