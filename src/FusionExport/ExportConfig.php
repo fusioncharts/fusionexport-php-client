@@ -11,6 +11,10 @@ use FusionExport\Exceptions\InvalidConfigurationException;
 use FusionExport\Exceptions\InvalidDataTypeException;
 use PHPHtmlParser\Dom;
 use mikehaertl\tmp\File as TmpFile;
+use PDO;
+
+require_once __DIR__ . './MinifyConfig.php';
+
 
 class ResourcePathInfo
 {
@@ -203,12 +207,17 @@ class ExportConfig
                     $this->formattedConfigs[$key] = $this->configs[$key];
             }
         }
-
+        $isMinified = false;
+        if (isset($this->configs['minifyResources'])) {
+            $isMinified = $this->get('minifyResources');
+        }
+        
         if (count($zipBag) > 0) {
-            $zipFile = $this->generateZip($zipBag);
+            $zipFile = $this->generateZip($zipBag,$isMinified);
             $this->formattedConfigs['payload'] = $zipFile;
         }
-
+        
+      
         $platform = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win32' : PHP_OS;
 
         $this->formattedConfigs['platform'] = $platform;
@@ -222,6 +231,15 @@ class ExportConfig
         $listExtractedPaths = $this->findResources();
         $listResourcePaths = array();
         $baseDirectoryPath = null;
+
+        $isMinified = false;
+        if (isset($this->configs['minifyResources'])) {
+            $isMinified = $this->get('minifyResources');
+        }
+
+         $minifiedHash = '.min-fusionexport'.date("Y-m-d H:i:s");
+         $minifiedExtension = $isMinified ?$minifiedHash :"";
+
         if (isset($this->configs['resourceFilePath'])) {
             Helpers::globResolve($listResourcePaths, $baseDirectoryPath, $this->configs[resourceFilePath]);
         }
@@ -246,6 +264,7 @@ class ExportConfig
         $templateFilePathWithinZipRel = Helpers::removeCommonPath($templateFilePath, $baseDirectoryPath);
         $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
         $zipPaths = array();
+        
         $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel, $baseDirectoryPath);
         $templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
         $outZipPaths = $zipPaths;
@@ -325,15 +344,25 @@ class ExportConfig
         return $listFilePath;
     }
 
-    private function generateZip($fileBag)
+    private function generateZip($fileBag,$minify)
     {
         $tmpFile = new TmpFile('', '.zip');
+        $a = new MinifyConfig();
+        $isMinified = $minify===true;
+
         $tmpFile->delete = false;
         $fileName = $tmpFile->getFileName();
+
+         $fileName = $fileName ;
+         print_r($fileName);
+        die();
 
         $zipFile = new \ZipArchive();
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
+
+            $files = $isMinified ?$a->minifyData($files):$files;
+            
             if (strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0) {
                 $zipFile->addFile($files->externalPath, $files->internalPath);
             }

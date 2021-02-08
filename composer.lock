@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9183c58993c75ca0fd7bcde9dd0dd8c3",
+    "content-hash": "15cb50ac26a3529ec6ab008e2b314a0d",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -475,6 +475,160 @@
             ],
             "description": "A polyfill for getallheaders.",
             "time": "2016-02-11T07:05:27+00:00"
+        },
+        {
+            "name": "shinsenter/defer.php",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shinsenter/defer.php.git",
+                "reference": "550368b9a8857907c6d2ac4c7d28a3418aa7ee86"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shinsenter/defer.php/zipball/550368b9a8857907c6d2ac4c7d28a3418aa7ee86",
+                "reference": "550368b9a8857907c6d2ac4c7d28a3418aa7ee86",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0 || ^8.0",
+                "symfony/polyfill-mbstring": "^1.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.17"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [],
+                "psr-4": {
+                    "AppSeeds\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mai Nhut Tan",
+                    "email": "shin@shin.company",
+                    "homepage": "https://code.shin.company",
+                    "role": "Owner"
+                }
+            ],
+            "description": "🚀 A PHP library that focuses on minimizing payload size of HTML document and optimizing processing on the browser when rendering the web page.",
+            "keywords": [
+                "PHP Library",
+                "avoid render blocking",
+                "defer",
+                "defer php",
+                "defer.js",
+                "dom optimization",
+                "gtmetrix",
+                "lazy load",
+                "lazy loader",
+                "lazy loading",
+                "lazyload",
+                "lazyload css",
+                "lazyload facebook",
+                "lazyload font",
+                "lazyload image",
+                "lazyload js",
+                "lazyload laravel",
+                "lazyload php",
+                "lazyload video",
+                "lazyload wordpress",
+                "lazyload youtube",
+                "page speed optimization",
+                "pagespeed insight",
+                "performance",
+                "website speed optimization"
+            ],
+            "support": {
+                "issues": "https://github.com/shinsenter/defer.php/issues",
+                "source": "https://github.com/shinsenter/defer.php"
+            },
+            "time": "2021-01-09T05:08:35+00:00"
+        },
+        {
+            "name": "symfony/polyfill-mbstring",
+            "version": "v1.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
+                "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "suggest": {
+                "ext-mbstring": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.22-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for the Mbstring extension",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "mbstring",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.22.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-01-07T16:49:33+00:00"
         }
     ],
     "packages-dev": [],
@@ -486,5 +640,6 @@
     "platform": {
         "php": "^5.6 || ^7.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

@@ -24,6 +24,7 @@
     "paquettg/php-html-parser": "^1.7",
     "guzzlehttp/guzzle": "^6.3",
     "mikehaertl/php-tmpfile": "^1.1",
-    "phpmailer/phpmailer": "^6.0"
+    "phpmailer/phpmailer": "^6.0",
+    "shinsenter/defer.php": "^1.1"
   }
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html class="no-deferjs">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous">
+    <link rel="preload" as="script"
+        href="https://cdn.jsdelivr.net/npm/@shinsenter/defer.js@latest/dist/defer_plus.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/@shinsenter/defer.js@latest/dist/defer_plus.min.js"
+        id="defer-js"></script>
+    <script
+        id="defer-script">"IntersectionObserver" in window || deferscript("https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver", "polyfill-js", 1); !function (e, n, t) { var i, o = ' https://github.com/shinsenter/', r = 'defer.js', a = 'defer-', u = 'deferjs', c = 'jQuery', d = Function(), s = 'data-', f = 'getAttribute', l = 'object' == typeof e.chrome && -1 == e.navigator.userAgent.indexOf('Trident/'), m = ':not([' + s + 'lazied]):not([' + s + 'ignore])', p = '[' + s + 'src]' + m, g = 'addEventListener', h = 'load', b = ['img' + p, 'picture' + m, '[data-style]' + m].join(','), y = ['iframe' + p, 'frame' + p, 'audio' + m, 'video' + m].join(','), v = { c: a + 'lazied', l: a + 'loading', d: a + 'loaded', h: n.getElementsByTagName('html').item(0), t: 10 }, j = (t.log || d).bind(t), T = e.defer || d, x = e.deferimg || d, z = e.deferiframe || d; function A() { l && j('%c defer.js ', 'font-size:14px;color:#fff;padding:2px;border-radius:4px;background:#2a313c'), j(['Optimized by ' + r, '(c) 2019 AppSeeds', 'Github: ' + o + r, 'PHP lib:' + o + 'defer.php'].join('\n')) } function N(e, n) { return e.split(' ').filter(function (e) { return '' != e && e != n }) } function k(e, n) { var t = N(e.className, n); t.push(n), e.className = t.join(' ') } function S(e, n) { e.className = N(e.className, n).join(' ') } function C(e) { var n, t, i = e[f](s + 'src'); function o() { n && (clearTimeout(n), n = null), S(e, v.l), k(e, v.d) } k(e, v.l), null !== (t = /(?:youtube(?:-nocookie)?\.com\/(?:[^/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/.exec(i)) && (e.style.background = 'transparent url(https://img.youtube.com/vi/' + t[1] + '/hqdefault.jpg) 50% 50% / cover no-repeat'), e.hasAttribute(s + 'ignore') || i && e.src == i || !i && e[f](s + 'style') ? o() : (e[g](h, o), n = setTimeout(o, 3e3)) } function E() { x(b, v.t, v.c, C, { rootMargin: '150%' }), z(y, v.t, v.c, C, { rootMargin: '200%' }) } v.copyright = A, v.debounce = function (t, i, o, r) { return function () { var e = this, n = arguments; o || clearTimeout(r), o && r || (r = setTimeout(function () { r = null, t.apply(e, n) }, i)) } }, v.defermedia = E, v.addClass = k, (v.removeClass = S)(v.h, 'no-' + u), k(v.h, u), e.defer_helper = v, e[g](h, function () { !i && c in e && 'fn' in e[c] && (i = e[c].fn.ready, e[c].fn.ready = function (e) { return T(function () { i(e) }), this }) }), E(), A() }(this, document, console);</script>
+    <style id="defer-css">
+        .no-deferjs .has-noscript {
+            display: none !important
+        }
+
+        audio,
+        embed,
+        frame,
+        iframe,
+        img,
+        picture,
+        source,
+        video {
+            min-width: 1px;
+            min-height: 1px;
+            visibility: visible
+        }
+
+        .defer-lazied {
+            transition: opacity .1s linear
+        }
+
+        .defer-lazied.defer-loaded {
+            background-color: transparent !important
+        }
+
+        .defer-lazied.defer-loading:not([data-style]):not([data-ignore]) {
+            opacity: .5 !important
+        }
+    </style>
+    <title>FusionExport Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .chart {
+            border: 1px solid black;
+            width: 98%;
+            margin-left: 10px;
+            margin-right: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart" id="column_chart"></div>
+    <div class="chart" id="pie_chart"></div>
+    <div class="chart" id="line_chart"></div>
+</body>
+
+</html>
