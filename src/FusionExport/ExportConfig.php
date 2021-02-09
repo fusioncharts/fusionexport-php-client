@@ -353,10 +353,6 @@ class ExportConfig
         $tmpFile->delete = false;
         $fileName = $tmpFile->getFileName();
 
-         $fileName = $fileName ;
-         print_r($fileName);
-        die();
-
         $zipFile = new \ZipArchive();
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
@@ -368,6 +364,7 @@ class ExportConfig
             }
         }
         $zipFile->close();
+        $isMinified?file_put_contents($files->externalPath, $files->data_html):'';
         return $fileName;
     }
 

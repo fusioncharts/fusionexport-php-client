@@ -8,7 +8,6 @@ class MinifyConfig
     function minifyData($files)
     {
 
-        print_r($files);
         $newPath = $files->externalPath;
         
 
@@ -50,18 +49,20 @@ class MinifyConfig
             'document\.write\s*\(',
             '(jquery([-_][\d\.]+)?(\.min)?\.js|jquery-core)',
         ];
- 
+
         // Then get the optimized output
         $result = $defer->fromHtml(file_get_contents($files->externalPath))->toHtml();
-        $filef = fopen('resources'.DIRECTORY_SEPARATOR."__".$files->internalPath,"w");
-        // Then get the optimized output
-        fwrite($filef,$result); 
+        //var_dump($result);
+        $data_html = file_get_contents($files->externalPath);
+        $files->data_html = $data_html;
+        if (file_put_contents($newPath, $result) !== false) {
+            echo "File created" ;
+        } else {
+            echo "Cannot create file (" . basename($newPath) . ")";
+        }
 
 
-         $files->internalPath = "__".$files->internalPath;
-         $files->externalPath = 'C:\xampp\htdocs\fusionexport-php-client\example\resources\__dashboard-template.html';
-        
-         print_r($files);
+
        return $files ;
     }
 }
