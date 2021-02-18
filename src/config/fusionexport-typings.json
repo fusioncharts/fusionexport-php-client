@@ -53,6 +53,12 @@
     "dashboardHeading": {
         "supportedTypes": ["string"]
     },
+    "header": {
+        "supportedTypes": ["string"]
+    },
+    "subheader": {
+        "supportedTypes": ["string"]
+    },
     "dashboardSubheading": {
         "supportedTypes": ["string"]
     },
