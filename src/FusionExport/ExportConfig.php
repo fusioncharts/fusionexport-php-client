@@ -260,13 +260,15 @@ class ExportConfig
         $imgs=array();
         $dom = new DOMDocument();
         
-        $regex = '~url\("([^\)]+?\.(woff|eot|woff2|ttf|svg|otf)[^"]*)~';
+        $regex = '~url\(([^\)]+?\.(woff|eot|woff2|ttf|svg|otf)[^)]*)~';
         @$dom->loadHTML(Helpers::readFile($this->configs['templateFilePath']));
         $html = @$dom->saveHTML();
         if($html){
             preg_match_all($regex, $html, $matches,PREG_SET_ORDER);
             foreach($matches as $match){
-                $links[] = $match[1];
+                if($match[1]){
+                    $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                }
             }
         } 
         
@@ -282,7 +284,9 @@ class ExportConfig
                     $css = Helpers::readFile($resolvedHref[0]);
                     preg_match_all($regex, $css, $matches,PREG_SET_ORDER);
                     foreach($matches as $match){
-                        $links[] = $match[1];
+                        if($match[1]){
+                            $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                        }
                     }
                 }
             }
