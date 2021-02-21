@@ -357,15 +357,21 @@ class ExportConfig
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
 
-            $files = $isMinified ?$a->minifyData($files):$files;
+            $files = $isMinified && $this->isHtmlJsCss($files) ?$a->minifyData($files):$files;
             
             if (strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0) {
                 $zipFile->addFile($files->externalPath, $files->internalPath);
             }
         }
         $zipFile->close();
-        $isMinified?file_put_contents($files->externalPath, $files->data_html):'';
+        $isMinified && $this->isHtmlJsCss($files) ?file_put_contents($files->externalPath, $files->data_html):'';
         return $fileName;
+    }
+
+    private function isHtmlJsCss($files){
+        $allowedExtensions= array('css', 'html', 'js');
+        $ext= pathinfo($files->internalPath, PATHINFO_EXTENSION);
+        return in_array($ext, $allowedExtensions);
     }
 
     private function readTypingsConfig()
