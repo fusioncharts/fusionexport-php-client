@@ -24,9 +24,9 @@ class ExportManager
         $this->isSecure = boolval($isSecure);
     }
 
-    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = true,$exportBulk='false') {
+    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = true, $exportBulk=true) {
 
-			$exporter = new Exporter($exportConfig,$exportBulk);
+			$exporter = new Exporter($exportConfig, $exportBulk);
 			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 
@@ -59,8 +59,8 @@ class ExportManager
 			return $exportedFiles;
 		}
 
-		public function exportAsStream(ExportConfig $exportConfig) {
-			$exporter = new Exporter($exportConfig);
+		public function exportAsStream(ExportConfig $exportConfig, $exportBulk=true) {
+			$exporter = new Exporter($exportConfig, $exportBulk);
 			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 

@@ -11,7 +11,6 @@ use FusionExport\ExportConfig;
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/multiple.json'));
-$exportConfig->set('exportBulk', "true");
 $exportConfig->set('type', "png");
 
 // Instantiate the ExportManager class

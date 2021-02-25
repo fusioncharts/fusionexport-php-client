@@ -23,7 +23,7 @@ class Exporter
 
     private $exportBulk;
 
-    public function __construct(ExportConfig $exportConfig,$exportBulk)
+    public function __construct(ExportConfig $exportConfig,$exportBulk=true)
     {
         $this->exportConfig = $exportConfig;
         $this->exportBulk = $exportBulk;
@@ -39,8 +39,7 @@ class Exporter
 		public function sendToServer() {
 			$this->client = new \GuzzleHttp\Client(['verify' => FALSE]);
 
-			$configData = $this->exportConfig->getFormattedConfigs();
-            $configData['exportBulk'] = $this->exportBulkParameterHandler($this->exportBulk);
+			$configData = $this->exportConfig->getFormattedConfigs($this->exportBulk);
             $url = $this->exportServerHost . ':' . $this->exportServerPort;
             $apiUrl = $this->getApiUrl($url);
 			$multipartArray = $this->createMultipartData($configData);
@@ -111,25 +110,6 @@ class Exporter
         return "http://". $url . $api;
     }
 
-    private function exportBulkParameterHandler($exportBulk){
-        if($exportBulk === "true" or $exportBulk==='True')
-        {
-            return 'true';
-        }
-        elseif($exportBulk === "false" or $exportBulk==='False')
-        {
-            return 'false';
-        }
-        elseif($exportBulk=='1' or $exportBulk==1)
-        {
-            return 'true';
-        }
-        elseif($exportBulk==0 or $exportBulk=='0')
-        {
-            return 'false';
-        }
-
-    }
     private function checkExportError($exportResult)
     {
         $exportResult = json_decode($exportResult);

@@ -89,9 +89,9 @@ class ExportConfig
         return $newExportConfig;
     }
 
-    public function getFormattedConfigs()
+    public function getFormattedConfigs($exportBulk=true)
     {
-        $this->formatConfigs();
+        $this->formatConfigs($exportBulk);
         return $this->formattedConfigs;
     }
 
@@ -137,7 +137,7 @@ class ExportConfig
         return $parsedValue;
     }
 
-    private function formatConfigs()
+    private function formatConfigs($exportBulk=true)
     {
         if (isset($this->configs['templateFilePath']) && isset($this->configs['template'])) {
             print("Both 'templateFilePath' and 'template' is provided. 'templateFilePath' will be ignored.\n");
@@ -195,8 +195,6 @@ class ExportConfig
                     if (empty($this->configs['asyncCapture']) < 1) {
                         if (strtolower($this->configs['asyncCapture']) == "true") {
                             $this->formattedConfigs['asyncCapture'] = "true";
-                        } else {
-                            $this->formattedConfigs['asyncCapture'] = "false";
                         }
                     }
                     break;
@@ -214,6 +212,7 @@ class ExportConfig
 
         $this->formattedConfigs['platform'] = $platform;
         $this->formattedConfigs['clientName'] = 'PHP';
+        if(!$exportBulk) $this->formattedConfigs['exportBulk'] = '';
     }
 
     private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
