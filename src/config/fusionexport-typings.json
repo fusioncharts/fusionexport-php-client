@@ -53,6 +53,12 @@
     "dashboardHeading": {
         "supportedTypes": ["string"]
     },
+    "header": {
+        "supportedTypes": ["string"]
+    },
+    "subheader": {
+        "supportedTypes": ["string"]
+    },
     "dashboardSubheading": {
         "supportedTypes": ["string"]
     },
@@ -115,7 +121,7 @@
         "supportedTypes": ["string"]
     },
     "minifyResources": {
-        "supportedTypes": ["string", "boolean"],
+        "supportedTypes": ["string", "boolean", "integer"],
         "converter": "BooleanConverter"
       }
 }

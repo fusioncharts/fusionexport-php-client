@@ -16,7 +16,6 @@ define("__AWS_SECRET_KEY", "");
 $exportConfig = new ExportConfig();
 $exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/single.json'));
 $exportConfig->set('templateFilePath', realpath(__DIR__ . '/resources/dashboard-template.html'));
-$exportConfig->set('minifyResources', "true");
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();

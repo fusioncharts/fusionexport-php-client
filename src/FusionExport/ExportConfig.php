@@ -15,6 +15,7 @@ use PDO;
 
 require_once __DIR__ . './MinifyConfig.php';
 
+use \DOMDocument;
 
 class ResourcePathInfo
 {
@@ -92,9 +93,10 @@ class ExportConfig
         return $newExportConfig;
     }
 
-    public function getFormattedConfigs()
+    public function getFormattedConfigs($minifyResources=false, $exportBulk=true)
     {
-        $this->formatConfigs();
+        $this->set('minifyResources', $minifyResources);
+        $this->formatConfigs($exportBulk);
         return $this->formattedConfigs;
     }
 
@@ -140,7 +142,7 @@ class ExportConfig
         return $parsedValue;
     }
 
-    private function formatConfigs()
+    private function formatConfigs($exportBulk=true)
     {
         if (isset($this->configs['templateFilePath']) && isset($this->configs['template'])) {
             print("Both 'templateFilePath' and 'template' is provided. 'templateFilePath' will be ignored.\n");
@@ -198,8 +200,6 @@ class ExportConfig
                     if (empty($this->configs['asyncCapture']) < 1) {
                         if (strtolower($this->configs['asyncCapture']) == "true") {
                             $this->formattedConfigs['asyncCapture'] = "true";
-                        } else {
-                            $this->formattedConfigs['asyncCapture'] = "false";
                         }
                     }
                     break;
@@ -222,6 +222,7 @@ class ExportConfig
 
         $this->formattedConfigs['platform'] = $platform;
         $this->formattedConfigs['clientName'] = 'PHP';
+        if(!$exportBulk) $this->formattedConfigs['exportBulk'] = '';
     }
 
     private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
@@ -273,28 +274,56 @@ class ExportConfig
 
     private function findResources()
     {
-        $dom = new Dom();
-        $dom->setOptions([
-            'removeScripts' => false,
-        ]);
+        $links=array();
+        $scripts=array();
+        $imgs=array();
+        $dom = new DOMDocument();
+        
+        $regex = '~url\(([^\)]+?\.(woff|eot|woff2|ttf|svg|otf)[^)]*)~';
+        @$dom->loadHTML(Helpers::readFile($this->configs['templateFilePath']));
+        $html = @$dom->saveHTML();
+        if($html){
+            preg_match_all($regex, $html, $matches,PREG_SET_ORDER);
+            foreach($matches as $match){
+                if($match[1]){
+                    $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                }
+            }
+        } 
+        
+        foreach(@$dom->getElementsByTagName('link') as $node){
+            $href = $node->getAttribute('href');
+            if($href){
+                $links[] = $href;
+                $resolvedHref = Helpers::resolvePaths(
+                    [$href],
+                    dirname(realpath($this->configs['templateFilePath']))
+                );
+                if(sizeof($resolvedHref) > 0){
+                    $css = Helpers::readFile($resolvedHref[0]);
+                    preg_match_all($regex, $css, $matches,PREG_SET_ORDER);
+                    foreach($matches as $match){
+                        if($match[1]){
+                            $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                        }
+                    }
+                }
+            }
+        }
 
-        @$dom->load(Helpers::readFile($this->configs['templateFilePath']));
+        foreach(@$dom->getElementsByTagName('script') as $node){
+            $scriptSrc = $node->getAttribute('src');
+            if($scriptSrc){
+                $scripts[] = $scriptSrc;
+            }
+        }
 
-        $links = @$dom->find('link')->toArray();
-        $scripts = @$dom->find('script')->toArray();
-        $imgs = @$dom->find('img')->toArray();
-
-        $links = array_map(function ($link) {
-            return $link->getAttribute('href');
-        }, $links);
-
-        $scripts = array_map(function ($script) {
-            return $script->getAttribute('src');
-        }, $scripts);
-
-        $imgs = array_map(function ($img) {
-            return $img->getAttribute('src');
-        }, $imgs);
+        foreach(@$dom->getElementsByTagName('img') as $node){
+            $imgSrc = $node->getAttribute('src');
+            if($imgSrc){
+                $imgs[] = $imgSrc;
+            }
+        }
 
         $this->collectedResources = array_merge($links, $scripts, $imgs);
 
@@ -304,7 +333,6 @@ class ExportConfig
             $this->collectedResources,
             dirname(realpath($this->configs['templateFilePath']))
         );
-
         $this->collectedResources = array_unique($this->collectedResources);
 
         return $this->collectedResources;
