@@ -13,8 +13,6 @@ use PHPHtmlParser\Dom;
 use mikehaertl\tmp\File as TmpFile;
 use PDO;
 
-require_once __DIR__ . './MinifyConfig.php';
-
 use \DOMDocument;
 
 class ResourcePathInfo
@@ -95,7 +93,9 @@ class ExportConfig
 
     public function getFormattedConfigs($minifyResources=false, $exportBulk=true)
     {
-        $this->set('minifyResources', $minifyResources);
+        if($minifyResources) {
+            $this->set("minifyResources", "true");
+        }
         $this->formatConfigs($exportBulk);
         return $this->formattedConfigs;
     }
@@ -375,7 +375,7 @@ class ExportConfig
     private function generateZip($fileBag,$minify)
     {
         $tmpFile = new TmpFile('', '.zip');
-        $a = new MinifyConfig();
+        $minifyConfig = new MinifyConfig();
         $isMinified = $minify===true;
 
         $tmpFile->delete = false;
@@ -385,7 +385,7 @@ class ExportConfig
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
 
-            $files = $isMinified && $this->isHtmlJsCss($files) ?$a->minifyData($files):$files;
+            $files = $isMinified && $this->isHtmlJsCss($files) ?$minifyConfig->minifyData($files):$files;
             
             if (strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0) {
                 $zipFile->addFile($files->externalPath, $files->internalPath);
