@@ -20,7 +20,7 @@ $exportManager = new ExportManager();
 
 try {
     // Call the export() method with the export config
-    $files = $exportManager->export($exportConfig, '.', true, true);
+    $files = $exportManager->export($exportConfig, '.', true, false);
 } catch (\Exception $err) {
     echo $err->getMessage();
     exit();
