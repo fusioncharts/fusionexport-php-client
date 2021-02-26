@@ -10,7 +10,7 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', realpath(__DIR__ . './resources/default_template.json'));
+$exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/default_template.json'));
 
 $exportConfig->set('templateFormat', 'A4');
 $exportConfig->set('header', "My Header");
