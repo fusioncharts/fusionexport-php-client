@@ -238,9 +238,6 @@ class ExportConfig
             $isMinified = $this->get('minifyResources');
         }
 
-         $minifiedHash = '.min-fusionexport'.date("Y-m-d H:i:s");
-         $minifiedExtension = $isMinified ?$minifiedHash :"";
-
         if (isset($this->configs['resourceFilePath'])) {
             Helpers::globResolve($listResourcePaths, $baseDirectoryPath, $this->configs[resourceFilePath]);
         }
@@ -384,15 +381,18 @@ class ExportConfig
         $zipFile = new \ZipArchive();
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
-
-            $files = $isMinified && $this->isHtmlJsCss($files) ?$minifyConfig->minifyData($files):$files;
-            
+            $files = $isMinified && $this->isHtmlJsCss($files) ? $minifyConfig-> minifyData($files): $files;
             if (strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0) {
                 $zipFile->addFile($files->externalPath, $files->internalPath);
             }
         }
         $zipFile->close();
-        $isMinified && $this->isHtmlJsCss($files) ?file_put_contents($files->externalPath, $files->data_html):'';
+        foreach ($fileBag as $files) {
+            if(property_exists($files, 'data')) {
+                file_put_contents($files->externalPath, $files->data);
+                unset($files->data);
+            }
+        }
         return $fileName;
     }
 

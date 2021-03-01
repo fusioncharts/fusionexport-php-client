@@ -1,28 +1,44 @@
 <?php
 // Include the library
 namespace FusionExport;
-
-require_once __DIR__ . '/../../vendor/shinsenter/defer.php/defer.php';
+use MatthiasMullie\Minify;
+use mikehaertl\tmp\File as TmpFile;
+use Wa72\HtmlPrettymin\PrettyMin;
+use \DOMDocument;
 class MinifyConfig
-{
+{   
+    private function getExtension($files){
+        return pathinfo($files->internalPath, PATHINFO_EXTENSION);
+    }
+    
     function minifyData($files)
     {
-
-        $newPath = $files->externalPath;
-        
-
-        // Create a Defer object
-        $defer = new \AppSeeds\Defer();
-        $defer->manually_add_deferjs = true;
-
-        // Then get the optimized output
-        $result = $defer->fromHtml(file_get_contents($files->externalPath))->toHtml();
-        //var_dump($result);
-        $data_html = file_get_contents($files->externalPath);
-        $files->data_html = $data_html;
-        if (file_put_contents($newPath, $result) !== false) echo "" ;
-
-
-       return $files ;
+        $ext=$this->getExtension($files);
+        $minifier = NULL;
+        $tmpFile = new TmpFile('', '.' . $ext);
+        $tempFile = $tmpFile->getFileName();
+        $externalfileContent = file_get_contents($files->externalPath);
+        if($ext == 'html') {
+            $minifier = new PrettyMin();
+            $output = $minifier->load($externalfileContent)->minify()->saveHtml();
+            file_put_contents($tempFile, $output);
+        } elseif ($ext == 'css') {
+            $minifier = new PrettyMin();
+            $dom = new DOMDocument();
+            $output = $minifier->load($externalfileContent)->minify()->saveHtml();
+            $pieces = array_slice(explode("\n", $output), 1);
+            $dom->loadHTML($pieces[0]);
+            $dom->getElementsByTagName('P');
+            file_put_contents($tempFile, $dom->textContent);
+            // $minifier = new Minify\CSS($files->externalPath);
+            // $minifier->minify($tempFile);
+        } elseif ($ext == 'js') {
+            $minifier = new Minify\JS($files->externalPath);
+            $minifier->minify($tempFile);
+        }
+        $tempFileContent = file_get_contents($tempFile);
+        file_put_contents($files->externalPath, $tempFileContent);
+        $files->data = $externalfileContent;
+        return $files ;
     }
 }
