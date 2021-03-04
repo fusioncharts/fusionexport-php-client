@@ -1,7 +1,7 @@
 {
   "name": "fusioncharts/fusionexport",
   "description": "PHP Client for FusionExport",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "type": "library",
   "keywords": [
     "export",
