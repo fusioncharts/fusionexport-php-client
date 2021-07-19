@@ -3,16 +3,6 @@
   "description": "PHP Client for FusionExport",
   "version": "2.0.0",
   "type": "library",
-  "authors": [{
-	"name": "Sanjay Bhan",
-    "email": "sanjay.bhan@idera.com"
-  }],
-  "repositories": [
-    {
-      "type":"composer",
-      "url":"https://fusioncharts.myget.org/F/fusionexport/composer"
-    }
-  ],
   "keywords": [
     "export",
     "fusioncharts",
