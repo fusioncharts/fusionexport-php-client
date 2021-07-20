@@ -13,6 +13,10 @@ composer.phar
 .AppleDouble
 .LSOverride
 
+
+# Authentication file
+auth.json
+
 # Icon must end with two \r
 Icon
 
@@ -40,6 +44,7 @@ Temporary Items
 .idea
 php-export-*.*
 export*.*
+!export*.php
 fusioncharts_export.*
 example/test.php
 

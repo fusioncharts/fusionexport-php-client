@@ -12,17 +12,26 @@ class ExportManager
 
     private $port;
 
+    private $isSecure;
+
+    private $minifyResources;
+
     public function __construct(
         $host = Constants::DEFAULT_HOST,
-        $port = Constants::DEFAULT_PORT
+        $port = Constants::DEFAULT_PORT,
+        $isSecure = Constants::DEFAULT_IS_SECURE,
+        $minifyResources = Constants::DEFAULT_MINIFY_RESOURCES
     ) {
         $this->host = $host;
         $this->port = $port;
+        $this->isSecure = boolval($isSecure);
+        $this->minifyResources = boolval($minifyResources);
     }
 
-    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = false) {
-			$exporter = new Exporter($exportConfig);
-			$exporter->setExportConnectionConfig($this->host, $this->port);
+    public function export(ExportConfig $exportConfig, $outputDir = '.', $unzip = true, $exportBulk=true) {
+
+			$exporter = new Exporter($exportConfig, $this->minifyResources, $exportBulk);
+			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 
 			$exportedFiles = [];
@@ -54,9 +63,9 @@ class ExportManager
 			return $exportedFiles;
 		}
 
-		public function exportAsStream(ExportConfig $exportConfig) {
-			$exporter = new Exporter($exportConfig);
-			$exporter->setExportConnectionConfig($this->host, $this->port);
+		public function exportAsStream(ExportConfig $exportConfig, $exportBulk=true) {
+			$exporter = new Exporter($exportConfig, $this->minifyResources, $exportBulk);
+			$exporter->setExportConnectionConfig($this->host, $this->port, $this->isSecure);
 			$contents = $exporter->sendToServer();
 
 			/* creating a temporary file */

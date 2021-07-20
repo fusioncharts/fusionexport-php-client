@@ -10,8 +10,8 @@ use FusionExport\ExportConfig;
 
 // Instantiate the ExportConfig class and add the required configurations
 $exportConfig = new ExportConfig();
-$exportConfig->set('chartConfig', realpath(__DIR__ . '/resources/single.json'));
-// $exportConfig->set('templateFilePath', realpath(__DIR__ . './external_font/dashboard-template.html'));
+$exportConfig->set('chartConfig',  "./resources/single.json");
+$exportConfig->set('type', 'xls');
 
 // Instantiate the ExportManager class
 $exportManager = new ExportManager();

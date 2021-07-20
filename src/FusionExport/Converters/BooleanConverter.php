@@ -22,6 +22,6 @@ class BooleanConverter
             $value = false;
         }
         
-        return (bool)$value;
+        return $value;
     }
 }

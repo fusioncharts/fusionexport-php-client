@@ -11,6 +11,9 @@ use FusionExport\Exceptions\InvalidConfigurationException;
 use FusionExport\Exceptions\InvalidDataTypeException;
 use PHPHtmlParser\Dom;
 use mikehaertl\tmp\File as TmpFile;
+use PDO;
+
+use \DOMDocument;
 
 class ResourcePathInfo
 {
@@ -88,9 +91,12 @@ class ExportConfig
         return $newExportConfig;
     }
 
-    public function getFormattedConfigs()
+    public function getFormattedConfigs($minifyResources=false, $exportBulk=true)
     {
-        $this->formatConfigs();
+        if($minifyResources) {
+            $this->set("minifyResources", "true");
+        }
+        $this->formatConfigs($exportBulk);
         return $this->formattedConfigs;
     }
 
@@ -136,7 +142,7 @@ class ExportConfig
         return $parsedValue;
     }
 
-    private function formatConfigs()
+    private function formatConfigs($exportBulk=true)
     {
         if (isset($this->configs['templateFilePath']) && isset($this->configs['template'])) {
             print("Both 'templateFilePath' and 'template' is provided. 'templateFilePath' will be ignored.\n");
@@ -194,8 +200,6 @@ class ExportConfig
                     if (empty($this->configs['asyncCapture']) < 1) {
                         if (strtolower($this->configs['asyncCapture']) == "true") {
                             $this->formattedConfigs['asyncCapture'] = "true";
-                        } else {
-                            $this->formattedConfigs['asyncCapture'] = "false";
                         }
                     }
                     break;
@@ -203,16 +207,22 @@ class ExportConfig
                     $this->formattedConfigs[$key] = $this->configs[$key];
             }
         }
-
+        $isMinified = false;
+        if (isset($this->configs['minifyResources'])) {
+            $isMinified = $this->get('minifyResources');
+        }
+        
         if (count($zipBag) > 0) {
-            $zipFile = $this->generateZip($zipBag);
+            $zipFile = $this->generateZip($zipBag,$isMinified);
             $this->formattedConfigs['payload'] = $zipFile;
         }
-
+        
+      
         $platform = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'win32' : PHP_OS;
 
         $this->formattedConfigs['platform'] = $platform;
         $this->formattedConfigs['clientName'] = 'PHP';
+        if(!$exportBulk) $this->formattedConfigs['exportBulk'] = '';
     }
 
     private function createTemplateZipPaths(&$outZipPaths, &$outTemplatePathWithinZip)
@@ -222,6 +232,12 @@ class ExportConfig
         $listExtractedPaths = $this->findResources();
         $listResourcePaths = array();
         $baseDirectoryPath = null;
+
+        $isMinified = false;
+        if (isset($this->configs['minifyResources'])) {
+            $isMinified = $this->get('minifyResources');
+        }
+
         if (isset($this->configs['resourceFilePath'])) {
             Helpers::globResolve($listResourcePaths, $baseDirectoryPath, $this->configs[resourceFilePath]);
         }
@@ -246,6 +262,7 @@ class ExportConfig
         $templateFilePathWithinZipRel = Helpers::removeCommonPath($templateFilePath, $baseDirectoryPath);
         $mapExtractedPathAbsToRel[$templateFilePath] = $templateFilePathWithinZipRel;
         $zipPaths = array();
+        
         $zipPaths = $this->generatePathForZip($mapExtractedPathAbsToRel, $baseDirectoryPath);
         $templatePathWithinZip = $templatePathWithinZip . DIRECTORY_SEPARATOR . $templateFilePathWithinZipRel;
         $outZipPaths = $zipPaths;
@@ -254,28 +271,56 @@ class ExportConfig
 
     private function findResources()
     {
-        $dom = new Dom();
-        $dom->setOptions([
-            'removeScripts' => false,
-        ]);
+        $links=array();
+        $scripts=array();
+        $imgs=array();
+        $dom = new DOMDocument();
+        
+        $regex = '~url\(([^\)]+?\.(woff|eot|woff2|ttf|svg|otf)[^)]*)~';
+        @$dom->loadHTML(Helpers::readFile($this->configs['templateFilePath']));
+        $html = @$dom->saveHTML();
+        if($html){
+            preg_match_all($regex, $html, $matches,PREG_SET_ORDER);
+            foreach($matches as $match){
+                if($match[1]){
+                    $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                }
+            }
+        } 
+        
+        foreach(@$dom->getElementsByTagName('link') as $node){
+            $href = $node->getAttribute('href');
+            if($href){
+                $links[] = $href;
+                $resolvedHref = Helpers::resolvePaths(
+                    [$href],
+                    dirname(realpath($this->configs['templateFilePath']))
+                );
+                if(sizeof($resolvedHref) > 0){
+                    $css = Helpers::readFile($resolvedHref[0]);
+                    preg_match_all($regex, $css, $matches,PREG_SET_ORDER);
+                    foreach($matches as $match){
+                        if($match[1]){
+                            $links[] = str_replace(array("'", "\"", "&quot;"), "", htmlspecialchars($match[1]));
+                        }
+                    }
+                }
+            }
+        }
 
-        @$dom->load(Helpers::readFile($this->configs['templateFilePath']));
+        foreach(@$dom->getElementsByTagName('script') as $node){
+            $scriptSrc = $node->getAttribute('src');
+            if($scriptSrc){
+                $scripts[] = $scriptSrc;
+            }
+        }
 
-        $links = @$dom->find('link')->toArray();
-        $scripts = @$dom->find('script')->toArray();
-        $imgs = @$dom->find('img')->toArray();
-
-        $links = array_map(function ($link) {
-            return $link->getAttribute('href');
-        }, $links);
-
-        $scripts = array_map(function ($script) {
-            return $script->getAttribute('src');
-        }, $scripts);
-
-        $imgs = array_map(function ($img) {
-            return $img->getAttribute('src');
-        }, $imgs);
+        foreach(@$dom->getElementsByTagName('img') as $node){
+            $imgSrc = $node->getAttribute('src');
+            if($imgSrc){
+                $imgs[] = $imgSrc;
+            }
+        }
 
         $this->collectedResources = array_merge($links, $scripts, $imgs);
 
@@ -285,7 +330,6 @@ class ExportConfig
             $this->collectedResources,
             dirname(realpath($this->configs['templateFilePath']))
         );
-
         $this->collectedResources = array_unique($this->collectedResources);
 
         return $this->collectedResources;
@@ -325,21 +369,37 @@ class ExportConfig
         return $listFilePath;
     }
 
-    private function generateZip($fileBag)
+    private function generateZip($fileBag,$minify)
     {
         $tmpFile = new TmpFile('', '.zip');
+        $minifyConfig = new MinifyConfig();
+        $isMinified = $minify===true;
+
         $tmpFile->delete = false;
         $fileName = $tmpFile->getFileName();
 
         $zipFile = new \ZipArchive();
         $zipFile->open($fileName, \ZipArchive::OVERWRITE);
         foreach ($fileBag as $files) {
+            $files = $isMinified && $this->isHtmlJsCss($files) ? $minifyConfig-> minifyData($files): $files;
             if (strlen((string)$files->internalPath) > 0 && strlen((string)$files->externalPath) > 0) {
                 $zipFile->addFile($files->externalPath, $files->internalPath);
             }
         }
         $zipFile->close();
+        foreach ($fileBag as $files) {
+            if(property_exists($files, 'data')) {
+                file_put_contents($files->externalPath, $files->data);
+                unset($files->data);
+            }
+        }
         return $fileName;
+    }
+
+    private function isHtmlJsCss($files){
+        $allowedExtensions= array('css', 'html', 'js');
+        $ext= pathinfo($files->internalPath, PATHINFO_EXTENSION);
+        return in_array($ext, $allowedExtensions);
     }
 
     private function readTypingsConfig()
